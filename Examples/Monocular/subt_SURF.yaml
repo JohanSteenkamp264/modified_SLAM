@@ -1,0 +1,77 @@
+%YAML:1.0
+
+#--------------------------------------------------------------------------------------------
+# Camera Parameters. Adjust them!
+#--------------------------------------------------------------------------------------------
+File.version: "1.0"
+
+Camera.type: "Rectified"
+
+# Camera calibration and distortion parameters (OpenCV) 
+Camera1.fx: 554.25469
+Camera1.fy: 554.25469
+Camera1.cx: 320.5
+Camera1.cy: 240.5
+
+Camera1.k1: 0.0
+Camera1.k2: 0.0
+Camera1.k3: 0.0
+Camera1.k4: 0.0
+
+# Camera frames per second 
+Camera.fps: 20
+
+# Color order of the images (0: BGR, 1: RGB. It is ignored if images are grayscale)
+Camera.RGB: 1
+
+# Camera resolution
+Camera.width: 640
+Camera.height: 480
+
+#--------------------------------------------------------------------------------------------
+# Viewer Parameters
+#--------------------------------------------------------------------------------------------
+Viewer.KeyFrameSize: 0.05
+Viewer.KeyFrameLineWidth: 1.0
+Viewer.GraphLineWidth: 0.9
+Viewer.PointSize: 2.0
+Viewer.CameraSize: 0.08
+Viewer.CameraLineWidth: 3.0
+Viewer.ViewpointX: 0.0
+Viewer.ViewpointY: -0.7
+Viewer.ViewpointZ: -3.5
+Viewer.ViewpointF: 500.0
+
+#--------------------------------------------------------------------------------------------
+# Extractor Parameters
+#--------------------------------------------------------------------------------------------
+
+# Extractor: Type of extractor
+#  - HFNetTF: the original HF-Net running in TensorFlow
+#  - HFNetRT: the HF-Net optimized by TensorRT
+#  - HFNetVINO: the HF-Net optimized by OpenVINO (Disabled because of the bad performance)
+Extractor.type: "SURF" # [HFNetTF HFNetRT HFNetVINO]
+
+# HFNET Extractor
+Extractor.modelPath: ""
+
+# Extractor: Scale factor between levels in the scale pyramid 	
+Extractor.scaleFactor: 1.5
+
+# Extractor: Number of levels in the scale pyramid	
+Extractor.nLevels: 4
+
+# Extractor: Number of features per image
+Extractor.nFeatures: 750
+Extractor.threshold: 0.1
+
+#--------------------------------------------------------------------------------------------
+# Matcher Parameters
+#--------------------------------------------------------------------------------------------
+Matcher.type: "NORM_L2"
+Matcher.TH_HIGH: 0.45
+Matcher.TH_LOW: 0.36
+
+
+
+
