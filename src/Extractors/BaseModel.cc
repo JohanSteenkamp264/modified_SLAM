@@ -17,7 +17,19 @@ BaseModel* gpGlobalModel = nullptr;
 
 void InitAllModels(Settings* settings)
 {
-    InitAllModels(settings->strModelPath(), settings->modelType(), settings->newImSize(), settings->nLevels(), settings->scaleFactor());
+    //InitAllModels(settings->strModelPath(), settings->modelType(), settings->newImSize(), settings->nLevels(), settings->scaleFactor());
+    /*TO EDIT initialize model/s based on custom parameters*/
+    bool found;
+    if(settings.readParameter<int<(settings, "Extractor.Pyrimid", found) > 0)
+    {
+        // Employ Pyrimid layered extraction
+        
+    }
+    else
+    {
+        // Method self employs pyrimid get scale values from extraction method
+        
+    }
 }
 
 void InitAllModels(const std::string& strModelPath, ModelType modelType, cv::Size ImSize, int nLevels, float scaleFactor)
@@ -106,6 +118,9 @@ BaseModel* GetGlobalModel(void)
     return gpGlobalModel;
 }
 
+/* TO EDIT BaseModel* InitSIFTModel(Settings* settings)
+    chnage initialization to customized opencv perameters
+*/
 BaseModel* InitSIFTModel(ModelDetectionMode mode, cv::Vec4i inputShape)
 {
     BaseModel* pModel;
@@ -121,6 +136,9 @@ BaseModel* InitSIFTModel(ModelDetectionMode mode, cv::Vec4i inputShape)
     return pModel;
 }
 
+/* TO EDIT BaseModel* InitSURFModel(Settings* settings)
+    chnage initialization to customized opencv perameters
+*/
 BaseModel* InitSURFModel(ModelDetectionMode mode, cv::Vec4i inputShape)
 {
     BaseModel* pModel;
@@ -136,6 +154,9 @@ BaseModel* InitSURFModel(ModelDetectionMode mode, cv::Vec4i inputShape)
     return pModel;
 }
 
+/* TO EDIT BaseModel* InitKAZEModel(Settings* settings)
+    chnage initialization to customized opencv perameters
+*/
 BaseModel* InitKAZEModel(ModelDetectionMode mode, cv::Vec4i inputShape)
 {
     BaseModel* pModel;

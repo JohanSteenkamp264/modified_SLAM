@@ -113,6 +113,7 @@ System::System(const string &strSettingsFile, const eSensor sensor,
     bool loadedAtlas = false;
 
     InitAllModels(settings_);
+    /*TO EDIT get values from feature extractor method*/
     MapPoint::mnScaleLevels = settings_->nLevels();
     MapPoint::mfScaleFactor = settings_->scaleFactor();
 

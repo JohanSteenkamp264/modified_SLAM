@@ -484,11 +484,23 @@ namespace ORB_SLAM3 {
             cerr << "Wrong extractor type in setting file!" << endl;
             exit(-1);
         }
+        /*TO EDIT Get values from feature extraction method*/
+        nFeatures_ = readParameter<int>(fSettings,"Extractor.nFeatures",found);
+        bNeedRGB_ = readParameter<int>(fSettings,"Extractor.needRGB",found) > 0;
+        bPyrimid_ = readParameter<int>(fSettings,"Extractor.Pyrimid",found) > 0;
+        
+
+        cout << "Extractor perameters detected"<< endl;
+        cout << "\tNumber of Features : " << nFeatures_ << endl;
+        cout << "\tNeed RGB : " << bNeedRGB_ << endl;
+        cout << "\tPyrimid : " << bPyrimid_ << endl;
+        /*
         scaleFactor_ = readParameter<float>(fSettings,"Extractor.scaleFactor",found);
         nLevels_ = readParameter<int>(fSettings,"Extractor.nLevels",found);
-        nFeatures_ = readParameter<int>(fSettings,"Extractor.nFeatures",found);
+        
         threshold_ = readParameter<float>(fSettings, "Extractor.threshold",found);
         strModelPath_ = readParameter<string>(fSettings, "Extractor.modelPath",found);
+        */
     }
 
     void Settings::readMatcherPerameters(cv::FileStorage& fSettings)

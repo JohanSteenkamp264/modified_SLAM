@@ -101,11 +101,9 @@ namespace ORB_SLAM3 {
         float depthMapFactor() {return depthMapFactor_;}
 
         ModelType modelType() {return modelType_;}
+        bool bNeedRGB() {return bNeedRGB_;}
+        bool bPyrimid() {return bPyrimid_;}
         int nFeatures() {return nFeatures_;}
-        int nLevels() {return nLevels_;}
-        float scaleFactor() {return scaleFactor_;}
-        float threshold() {return threshold_;} 
-        std::string strModelPath() {return strModelPath_;}
 
         float keyFrameSize() {return keyFrameSize_;}
         float keyFrameLineWidth() {return keyFrameLineWidth_;}
@@ -209,13 +207,11 @@ namespace ORB_SLAM3 {
 
         /*
          * Extractor stuff
+         * TO EDIT change needed Feature perameters
          */
         ModelType modelType_;
-        int nFeatures_;
-        float scaleFactor_;
-        int nLevels_;
-        float threshold_;
-        std::string strModelPath_;
+        bool bNeedRGB_;
+        bool bPyrimid_;
 
         /*
          * Viewer stuff

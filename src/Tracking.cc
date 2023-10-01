@@ -675,7 +675,7 @@ void Tracking::newParameterLoader(Settings *settings) {
     mMinFrames = 0;
     mMaxFrames = settings->fps();
     mbRGB = settings->rgb();
-
+    /* TO EDIT get values from feature extractor*/
     //Extractor parameters
     mModelType = settings->modelType();
     int nFeatures = settings->nFeatures();
@@ -684,6 +684,7 @@ void Tracking::newParameterLoader(Settings *settings) {
     float fScaleFactor = settings->scaleFactor();
 
     auto vpModels = GetModelVec();
+    /* TO EDIT change HFextractor constructor to not use setting(vpModels) instead of (nFeatures,fThreshold,fScaleFactor,nLevels,vpModels)*/
     mpExtractorLeft = new HFextractor(nFeatures,fThreshold,fScaleFactor,nLevels,vpModels);
 
     if(mSensor==System::STEREO || mSensor==System::IMU_STEREO)
