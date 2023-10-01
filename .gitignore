@@ -1,3 +1,4 @@
 # Exclude all build files and exicutables
 build/
 bin/
+lib/

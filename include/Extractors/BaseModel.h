@@ -51,6 +51,7 @@ public:
     virtual bool IsValid(void) = 0;
 
     virtual ModelType Type(void) = 0;
+    
     virtual bool getScaleValues(float &scaleFactor, std::vector<float> & mvScaleFactor, std::vector<float> & mvInvScaleFactor, std::vector<float> & mvLevelSigma2, std::vector<float> &mvInvLevelSigma2) = 0;
 };
 
