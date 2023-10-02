@@ -25,9 +25,6 @@ public:
     bool IsValid(void) override { return true; };
 
     ModelType Type(void) override {return oCVSIFTModel;};
-
-    bool getScaleValues(float &scaleFactor, int &nLevels, std::vector<float> & mvScaleFactor, std::vector<float> & mvInvScaleFactor,
-                                std::vector<float> & mvLevelSigma2, std::vector<float> &mvInvLevelSigma2) override;
 protected:
     cv::Ptr<cv::SIFT> sift;
 

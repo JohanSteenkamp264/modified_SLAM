@@ -7,6 +7,7 @@
 #include <iostream>
 
 #include "Extractors/HFextractor.h"
+#include "Settings.h"
 
 using namespace cv;
 using namespace std;
@@ -18,58 +19,98 @@ const int PATCH_SIZE = 31;
 const int HALF_PATCH_SIZE = 15;
 const int EDGE_THRESHOLD = 19;
 
-HFextractor::HFextractor(int _nfeatures, const std::vector<BaseModel*>& _vpModels):
+HFextractor::HFextractor(int _nfeatures, Settings* settings, const std::vector<BaseModel*>& _vpModels):
     nfeatures(_nfeatures), mvpModels(_vpModels)
 {
-    // (use_pyrimid) == false constructor
-    nlevels = 3*4 + 3;
-    scaleFactor = pow(2.0,1.0/(3))  ;
-    mvScaleFactor.resize(nlevels);
-    mvLevelSigma2.resize(nlevels);
+    bool found = false;
+    if(mvpModels[0]->Type() == oCVSIFTModel){
+        Size im_size = settings->newImSize();
+        int _noctaves = cvRound(std::log( (double)std::min( im_size.height, im_size.width ) ) / std::log(2.) - 2) - 1.0;
+        cout << "num Octaves Detectd from imsize " << _noctaves << endl;
 
-    cout << nlevels << " " << scaleFactor << endl;
+        int nOctaveLayers = settings->readParameter<int>(settings->fSettings,"Extractor.SIFT.nOctaveLayers",found, false);
+        if(found)
+        {
+            cout << "Found Extractor.SIFT.nOctaveLayers in settings" << endl;
+        }
+        else
+        {
+            nOctaveLayers = 3;
+            cout << "Did not find Extractor.SIFT.nOctaveLayers in settings, using default " << nOctaveLayers << endl;
+        }
 
-    mvScaleFactor[0]=1.0f;
-    mvLevelSigma2[0]=1.6;
+        double sigma = settings->readParameter<double>(settings->fSettings,"Extractor.SIFT.sigma",found, false);
+        if(found)
+        {
+            cout << "Found Extractor.SIFT.sigma in settings" << endl;
+        }
+        else
+        {
+            sigma = 1.6;
+            cout << "Did not find Extractor.SIFT.sigma in settings, using default " << sigma << endl;
+        }
 
-    for(int i=1; i<nlevels; i++)
-    {
-        mvScaleFactor[i]=mvScaleFactor[i-1]*scaleFactor;
-        mvLevelSigma2[i]=mvLevelSigma2[i-1]*mvScaleFactor[i]*mvScaleFactor[i];
+        
+        determineLayers_wo_pyrimid(_noctaves, nOctaveLayers, pow(2.0,1.0/(nOctaveLayers)), sigma);
     }
-    cout << nlevels << endl;
-
-    mvInvScaleFactor.resize(nlevels);
-    mvInvLevelSigma2.resize(nlevels);
-    for(int i=0; i<nlevels; i++)
+    else if (mvpModels[0]->Type() == oCVSURFModel)
     {
-        mvInvScaleFactor[i]=1.0f/mvScaleFactor[i];
-        mvInvLevelSigma2[i]=1.0f/mvLevelSigma2[i];
+        int nOctaves = settings->readParameter<int>(settings->fSettings,"Extractor.SURF.nOctaves",found, false);
+        if(found)
+        {
+            cout << "Found Extractor.SURF.nOctaves in settings" << endl;
+        }
+        else
+        {
+            nOctaves = 4;
+            cout << "Did not find Extractor.SURF.nOctaves in settings, using default :" << nOctaves << endl;
+        }
+
+        int nOctaveLayers = settings->readParameter<int>(settings->fSettings,"Extractor.SURF.nOctaveLayers",found, false);
+        if(found)
+        {
+            cout << "Found Extractor.SURF.nOctaveLayers in settings" << endl;
+        }
+        else
+        {
+            nOctaveLayers = 3;
+            cout << "Did not find Extractor.SURF.nOctaveLayers in settings, using default :" << nOctaveLayers << endl;
+        }
+
+        determineLayers_wo_pyrimid(nOctaves, 1, 2.0, 2.5);
     }
-    cout << nlevels << endl;
-
-    mvImagePyramid.resize(1);
-    mnFeaturesPerLevel.resize(1);
-    mnFeaturesPerLevel[0] = nfeatures;
-
-    //This is for orientation
-    // pre-compute the end of a row in a circular patch
-    umax.resize(HALF_PATCH_SIZE + 1);
-
-    int v, v0, vmax = cvFloor(HALF_PATCH_SIZE * sqrt(2.f) / 2 + 1);
-    int vmin = cvCeil(HALF_PATCH_SIZE * sqrt(2.f) / 2);
-    const double hp2 = HALF_PATCH_SIZE*HALF_PATCH_SIZE;
-    for (v = 0; v <= vmax; ++v)
-        umax[v] = cvRound(sqrt(hp2 - v * v));
-
-    // Make sure we are symmetric
-    for (v = HALF_PATCH_SIZE, v0 = 0; v >= vmin; --v)
+    else if (mvpModels[0]->Type() == oCVKAZEModel)
     {
-        while (umax[v0] == umax[v0 + 1])
-            ++v0;
-        umax[v] = v0;
-        ++v0;
+        int nOctaves = settings->readParameter<int>(settings->fSettings,"Extractor.KAZE.nOctaves",found, false);
+        if(found)
+        {
+            cout << "Found Extractor.KAZE.nOctaves in settings" << endl;
+        }
+        else
+        {
+            nOctaves = 4;
+            cout << "Did not find Extractor.KAZE.nOctaves in settings, using default :" << nOctaves << endl;
+        }
+
+        int nOctaveLayers = settings->readParameter<int>(settings->fSettings,"Extractor.KAZE.nOctaveLayers",found, false);
+        if(found)
+        {
+            cout << "Found Extractor.KAZE.nOctaveLayers in settings" << endl;
+        }
+        else
+        {
+            nOctaveLayers = 4;
+            cout << "Did not find Extractor.KAZE.nOctaveLayers in settings, using default :" << nOctaveLayers << endl;
+        }
+
+        determineLayers_wo_pyrimid(nOctaves, 1, 2.0, 1.0);
     }
+    else
+    {
+        cerr << "Wrong type of model!" << endl;
+        exit(-1);
+    }
+    
 }
 
 
@@ -111,6 +152,54 @@ HFextractor::HFextractor(int _nfeatures, float _scaleFactor,
         nDesiredFeaturesPerScale *= factor;
     }
     mnFeaturesPerLevel[nlevels-1] = std::max(nfeatures - sumFeatures, 0);
+
+    //This is for orientation
+    // pre-compute the end of a row in a circular patch
+    umax.resize(HALF_PATCH_SIZE + 1);
+
+    int v, v0, vmax = cvFloor(HALF_PATCH_SIZE * sqrt(2.f) / 2 + 1);
+    int vmin = cvCeil(HALF_PATCH_SIZE * sqrt(2.f) / 2);
+    const double hp2 = HALF_PATCH_SIZE*HALF_PATCH_SIZE;
+    for (v = 0; v <= vmax; ++v)
+        umax[v] = cvRound(sqrt(hp2 - v * v));
+
+    // Make sure we are symmetric
+    for (v = HALF_PATCH_SIZE, v0 = 0; v >= vmin; --v)
+    {
+        while (umax[v0] == umax[v0 + 1])
+            ++v0;
+        umax[v] = v0;
+        ++v0;
+    }
+}
+
+void HFextractor::determineLayers_wo_pyrimid(int _nOctaves, int _nLayersPerOctave, float _scaleFactor, float _initSigma){
+    // (use_pyrimid) == false constructor
+    nlevels = _nLayersPerOctave*(_nOctaves + 1);
+    scaleFactor = _scaleFactor;//pow(2.0,1.0/(3))  ;
+    mvScaleFactor.resize(nlevels);
+    mvLevelSigma2.resize(nlevels);
+
+    mvScaleFactor[0]=1.0f;
+    mvLevelSigma2[0]=_initSigma;
+
+    for(int i=1; i<nlevels; i++)
+    {
+        mvScaleFactor[i]=mvScaleFactor[i-1]*scaleFactor;
+        mvLevelSigma2[i]=mvLevelSigma2[i-1]*mvScaleFactor[i]*mvScaleFactor[i];
+    }
+
+    mvInvScaleFactor.resize(nlevels);
+    mvInvLevelSigma2.resize(nlevels);
+    for(int i=0; i<nlevels; i++)
+    {
+        mvInvScaleFactor[i]=1.0f/mvScaleFactor[i];
+        mvInvLevelSigma2[i]=1.0f/mvLevelSigma2[i];
+    }
+
+    mvImagePyramid.resize(1);
+    mnFeaturesPerLevel.resize(1);
+    mnFeaturesPerLevel[0] = nfeatures;
 
     //This is for orientation
     // pre-compute the end of a row in a circular patch

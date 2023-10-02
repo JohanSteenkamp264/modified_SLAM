@@ -698,13 +698,13 @@ void Tracking::newParameterLoader(Settings *settings) {
     else
     {
         // allow method to perform scaling and calculate scaling parameters
-        mpExtractorLeft = new HFextractor(nFeatures,vpModels);
+        mpExtractorLeft = new HFextractor(nFeatures, settings, vpModels);
 
         if(mSensor==System::STEREO || mSensor==System::IMU_STEREO)
-            mpExtractorRight = new HFextractor(nFeatures,vpModels);
+            mpExtractorRight = new HFextractor(nFeatures, settings, vpModels);
 
         if(mSensor==System::MONOCULAR || mSensor==System::IMU_MONOCULAR)
-            mpIniExtractor = new HFextractor(5*nFeatures,vpModels);
+            mpIniExtractor = new HFextractor(5*nFeatures, settings, vpModels);
     }
 
     MapPoint::mnScaleLevels = mpExtractorLeft->GetLevels();

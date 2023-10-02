@@ -157,7 +157,7 @@ BaseModel* InitSIFTModel(ModelDetectionMode mode, Settings* settings)
     else
     {
         nOctaveLayers = 3;
-        cout << "Did not find Extractor.SIFT.nOctaveLayers in settings, using default" << nOctaveLayers << endl;
+        cout << "Did not find Extractor.SIFT.nOctaveLayers in settings, using default :" << nOctaveLayers << endl;
     }
 
     double contrastThreshold = settings->readParameter<double>(settings->fSettings,"Extractor.SIFT.contrastThreshold",found, false);
@@ -168,7 +168,7 @@ BaseModel* InitSIFTModel(ModelDetectionMode mode, Settings* settings)
     else
     {
         contrastThreshold = 0.04;
-        cout << "Did not find Extractor.SIFT.contrastThreshold in settings, using default" << contrastThreshold << endl;
+        cout << "Did not find Extractor.SIFT.contrastThreshold in settings, using default :" << contrastThreshold << endl;
     }
 
     double edgeThreshold = settings->readParameter<double>(settings->fSettings,"Extractor.SIFT.edgeThreshold",found, false);
@@ -179,7 +179,7 @@ BaseModel* InitSIFTModel(ModelDetectionMode mode, Settings* settings)
     else
     {
         edgeThreshold = 10.0;
-        cout << "Did not find Extractor.SIFT.edgeThreshold in settings, using default" << edgeThreshold << endl;
+        cout << "Did not find Extractor.SIFT.edgeThreshold in settings, using default :" << edgeThreshold << endl;
     }
 
     double sigma = settings->readParameter<double>(settings->fSettings,"Extractor.SIFT.sigma",found, false);
@@ -190,7 +190,7 @@ BaseModel* InitSIFTModel(ModelDetectionMode mode, Settings* settings)
     else
     {
         sigma = 1.6;
-        cout << "Did not find Extractor.SIFT.sigma in settings, using default" << sigma << endl;
+        cout << "Did not find Extractor.SIFT.sigma in settings, using default :" << sigma << endl;
     }
 
     pModel = new SIFTModel(nfeatures, nOctaveLayers, contrastThreshold, edgeThreshold, sigma);
@@ -211,52 +211,176 @@ BaseModel* InitSIFTModel(ModelDetectionMode mode, Settings* settings)
 
 /* TO EDIT BaseModel* InitSURFModel(Settings* settings)
     chnage initialization to customized opencv perameters
-
+*/
 BaseModel* InitSURFModel(ModelDetectionMode mode, Settings* settings)
 {
     BaseModel* pModel;
-    pModel = new SURFModel();
+    bool found = false;
+
+    double hessianThreshold = settings->readParameter<double>(settings->fSettings,"Extractor.SURF.hessianThreshold",found, false);
+    if(found)
+    {
+        cout << "Found Extractor.SURF.hessianThreshold in settings" << endl;
+    }
+    else
+    {
+        hessianThreshold = 100.0;
+        cout << "Did not find Extractor.SURF.hessianThreshold in settings, using default :" << hessianThreshold << endl;
+    }
+
+    int nOctaves = settings->readParameter<int>(settings->fSettings,"Extractor.SURF.nOctaves",found, false);
+    if(found)
+    {
+        cout << "Found Extractor.SURF.nOctaves in settings" << endl;
+    }
+    else
+    {
+        nOctaves = 4;
+        cout << "Did not find Extractor.SURF.nOctaves in settings, using default :" << nOctaves << endl;
+    }
+
+    int nOctaveLayers = settings->readParameter<int>(settings->fSettings,"Extractor.SURF.nOctaveLayers",found, false);
+    if(found)
+    {
+        cout << "Found Extractor.SURF.nOctaveLayers in settings" << endl;
+    }
+    else
+    {
+        nOctaveLayers = 3;
+        cout << "Did not find Extractor.SURF.nOctaveLayers in settings, using default :" << nOctaveLayers << endl;
+    }
+
+    bool extended = settings->readParameter<int>(settings->fSettings,"Extractor.SURF.extended",found, false) > 0;
+    if(found)
+    {
+        cout << "Found Extractor.SURF.extended in settings" << endl;
+    }
+    else
+    {
+        extended = false;
+        cout << "Did not find Extractor.SURF.extended in settings, using default :" << extended << endl;
+    }
+
+    bool upright = settings->readParameter<int>(settings->fSettings,"Extractor.SURF.upright",found, false) > 0;
+    if(found)
+    {
+        cout << "Found Extractor.SURF.upright in settings" << endl;
+    }
+    else
+    {
+        upright = false;
+        cout << "Did not find Extractor.SURF.upright in settings, using default :" << upright << endl;
+    }
+
+    pModel = new SURFModel(hessianThreshold, nOctaves, nOctaveLayers, extended, upright);
     if (pModel->IsValid())
     {
         cout << "Successfully created OpenCV SURF."
-             << " Mode: " << gStrModelDetectionName[mode]
-             << " Shape: " << inputShape.t() << endl;
+             << " Mode: " << gStrModelDetectionName[mode]<< endl;
+        cout    << "hessianThreshold: " << hessianThreshold << endl
+                << "nOctaves: " << nOctaves << endl
+                << "nOctaveLayers: " << nOctaveLayers << endl
+                << "extended: " << extended << endl
+                << "upright: " << upright << endl;
     }
     else exit(-1);
 
     return pModel;
 }
-*/
+
+/*
 BaseModel* InitSURFModel(ModelDetectionMode mode, Settings* settings)
 {
     cout << "SURF Feature extractor not implemeted yet" << endl;
     exit(-1);
 }
+*/
 
 /* TO EDIT BaseModel* InitKAZEModel(Settings* settings)
     chnage initialization to customized opencv perameters
-
+*/
 BaseModel* InitKAZEModel(ModelDetectionMode mode, Settings* settings)
 {
     BaseModel* pModel;
-    pModel = new KAZEModel();
+    bool found = false;
+
+    bool extended = settings->readParameter<int>(settings->fSettings,"Extractor.KAZE.extended",found, false) > 0;
+    if(found)
+    {
+        cout << "Found Extractor.KAZE.extended in settings" << endl;
+    }
+    else
+    {
+        extended = false;
+        cout << "Did not find Extractor.KAZE.extended in settings, using default :" << extended << endl;
+    }
+
+    bool upright = settings->readParameter<int>(settings->fSettings,"Extractor.KAZE.upright",found, false) > 0;
+    if(found)
+    {
+        cout << "Found Extractor.KAZE.upright in settings" << endl;
+    }
+    else
+    {
+        upright = false;
+        cout << "Did not find Extractor.KAZE.upright in settings, using default :" << upright << endl;
+    }
+
+    float threshold = settings->readParameter<float>(settings->fSettings,"Extractor.KAZE.threshold",found, false);
+    if(found)
+    {
+        cout << "Found Extractor.KAZE.threshold in settings" << endl;
+    }
+    else
+    {
+        threshold = 0.001;
+        cout << "Did not find Extractor.KAZE.threshold in settings, using default :" << threshold << endl;
+    }
+
+    int nOctaves = settings->readParameter<int>(settings->fSettings,"Extractor.KAZE.nOctaves",found, false);
+    if(found)
+    {
+        cout << "Found Extractor.KAZE.nOctaves in settings" << endl;
+    }
+    else
+    {
+        nOctaves = 4;
+        cout << "Did not find Extractor.KAZE.nOctaves in settings, using default :" << nOctaves << endl;
+    }
+
+    int nOctaveLayers = settings->readParameter<int>(settings->fSettings,"Extractor.KAZE.nOctaveLayers",found, false);
+    if(found)
+    {
+        cout << "Found Extractor.KAZE.nOctaveLayers in settings" << endl;
+    }
+    else
+    {
+        nOctaveLayers = 4;
+        cout << "Did not find Extractor.KAZE.nOctaveLayers in settings, using default :" << nOctaveLayers << endl;
+    }
+
+    pModel = new KAZEModel(extended, upright, threshold, nOctaves, nOctaveLayers);
     if (pModel->IsValid())
     {
-        cout << "Successfully created OpenCV KAZE."
-             << " Mode: " << gStrModelDetectionName[mode]
-             << " Shape: " << inputShape.t() << endl;
+        cout    << "Successfully created OpenCV KAZE."
+                << " Mode: " << gStrModelDetectionName[mode] << endl;
+        cout    << "extended: " << extended << endl
+                << "upright: " << upright << endl
+                << "threshold: " << threshold << endl
+                << "nOctaves: " << nOctaves << endl
+                << "nOctaveLayers: " << nOctaveLayers << endl;
     }
     else exit(-1);
 
     return pModel;
 }
-*/
+/*
 BaseModel* InitKAZEModel(ModelDetectionMode mode, Settings* settings)
 {
     cout << "SURF Feature extractor not implemeted yet" << endl;
     exit(-1);
 }
-
+*/
 
 void ExtractorNode::DivideNode(ExtractorNode &n1, ExtractorNode &n2, ExtractorNode &n3, ExtractorNode &n4)
 {

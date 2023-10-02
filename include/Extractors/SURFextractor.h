@@ -4,6 +4,9 @@
 #include <vector>
 #include <iostream>
 #include <opencv2/opencv.hpp>
+#include <opencv2/features2d.hpp>
+#include <opencv2/xfeatures2d.hpp>
+
 #include "Extractors/BaseModel.h"
 namespace ORB_SLAM3
 {
@@ -11,7 +14,7 @@ namespace ORB_SLAM3
 class SURFModel: public BaseModel
 {
 public:
-    SURFModel(Settings* settings){};
+    SURFModel(double _hessianThreshold, int _nOctaves, int _nOctaveLayers, bool _extended, bool _upright);
     ~SURFModel(){};
     bool Detect(const cv::Mat &image, std::vector<cv::KeyPoint> &vKeyPoints, cv::Mat &localDescriptors, cv::Mat &globalDescriptors,
                         int nKeypointsNum, float threshold) override;
@@ -24,8 +27,14 @@ public:
     bool IsValid(void) override { return true; };
 
     ModelType Type(void) override {return oCVSURFModel;};
-    
-    bool getScaleValues(float &scaleFactor, std::vector<float> & mvScaleFactor, std::vector<float> & mvInvScaleFactor, std::vector<float> & mvLevelSigma2, std::vector<float> &mvInvLevelSigma2) {return true;};
+private:
+    double hessianThreshold;
+    int nOctaves;
+    int nOctaveLayers;
+    bool extended;
+    bool upright;
+
+    cv::Ptr<cv::xfeatures2d::SURF> surf;
 };
 
 } // ORB_SLAM3

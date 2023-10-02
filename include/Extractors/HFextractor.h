@@ -1,6 +1,7 @@
 #ifndef HFNETEXTRACTOR_H
 #define HFNETEXTRACTOR_H
 
+#include <cmath>
 #include <vector>
 #include <list>
 #include <opencv2/opencv.hpp>
@@ -10,15 +11,18 @@ namespace ORB_SLAM3
 {
 
 class BaseModel;
+class Settings;
 
 class HFextractor
 {
 public:
 
-    HFextractor(int nfeatures,  const std::vector<BaseModel*>& vpModels);
+    HFextractor(int nfeatures, Settings* settings, const std::vector<BaseModel*>& vpModels);
 
     HFextractor(int nfeatures, float scaleFactor, 
                 int nlevels, const std::vector<BaseModel*>& vpModels);
+
+    void determineLayers_wo_pyrimid(int _nOctaves, int _nLayersPerOctave, float _scaleFactor, float _initSigma);
 
     ~HFextractor(){}
 

@@ -50,7 +50,8 @@ Viewer.ViewpointF: 500.0
 #  - HFNetTF: the original HF-Net running in TensorFlow
 #  - HFNetRT: the HF-Net optimized by TensorRT
 #  - HFNetVINO: the HF-Net optimized by OpenVINO (Disabled because of the bad performance)
-Extractor.type: "SIFT" # [HFNetTF HFNetRT HFNetVINO]
+Extractor.type: "SURF" # [HFNetTF HFNetRT HFNetVINO]
+Extractor.KAZE.threshold: 0.0007
 
 Extractor.nFeatures: 1000 # Maximum numbers of features
 
@@ -67,8 +68,8 @@ Extractor.nLevels: 4
 #--------------------------------------------------------------------------------------------
 # Matcher Parameters
 #--------------------------------------------------------------------------------------------
-Matcher.TH_HIGH: 450.0
-Matcher.TH_LOW: 360.0
+Matcher.TH_HIGH: 0.4500
+Matcher.TH_LOW: 0.3600
 
 
 

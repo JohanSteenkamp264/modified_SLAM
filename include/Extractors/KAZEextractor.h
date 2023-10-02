@@ -4,6 +4,7 @@
 #include <vector>
 #include <iostream>
 #include <opencv2/opencv.hpp>
+#include <opencv2/features2d.hpp>
 #include "Extractors/BaseModel.h"
 namespace ORB_SLAM3
 {
@@ -11,7 +12,7 @@ namespace ORB_SLAM3
 class KAZEModel: public BaseModel
 {
 public:
-    KAZEModel(Settings* settings){};
+    KAZEModel(bool extended, bool upright, float threshold, int nOctaves, int nOctaveLayers);
     ~KAZEModel(){};
     bool Detect(const cv::Mat &image, std::vector<cv::KeyPoint> &vKeyPoints, cv::Mat &localDescriptors, cv::Mat &globalDescriptors,
                         int nKeypointsNum, float threshold) override;
@@ -24,8 +25,14 @@ public:
     bool IsValid(void) override { return true; };
 
     ModelType Type(void) override {return oCVKAZEModel;};
+private:
+    bool extended;
+    bool upright;
+    float threshold;
+    int nOctaves;
+    int nOctaveLayers;
 
-    bool getScaleValues(float &scaleFactor, std::vector<float> & mvScaleFactor, std::vector<float> & mvInvScaleFactor, std::vector<float> & mvLevelSigma2, std::vector<float> &mvInvLevelSigma2) {return true;};
+    cv::Ptr<cv::Feature2D> KAZE;
 };
 
 } // ORB_SLAM3

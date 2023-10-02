@@ -81,34 +81,4 @@ bool SIFTModel::Detect(const cv::Mat &intermediate, cv::Mat &globalDescriptors)
     intermediate.copyTo(globalDescriptors);
 }
 
-bool SIFTModel::getScaleValues(float &scaleFactor, int &nLevels, std::vector<float> & mvScaleFactor, std::vector<float> & mvInvScaleFactor,
-                                std::vector<float> & mvLevelSigma2, std::vector<float> &mvInvLevelSigma2)
-{
-    scaleFactor = pow(2.0,1.0/3.0)  ;
-    nLevels = 3*nOctaveLayers + 3;
-    mvScaleFactor.resize(nLevels);
-    mvLevelSigma2.resize(nLevels);
-
-    cout << nLevels << " " << scaleFactor << endl;
-
-    mvScaleFactor[0]=1.0f;
-    mvLevelSigma2[0]=sigma;
-
-    for(int i=1; i<nLevels; i++)
-    {
-        mvScaleFactor[i]=mvScaleFactor[i-1]*scaleFactor;
-        mvLevelSigma2[i]=mvScaleFactor[i]*mvScaleFactor[i];
-    }
-    cout << nLevels << endl;
-
-    mvInvScaleFactor.resize(nLevels);
-    mvInvLevelSigma2.resize(nLevels);
-    for(int i=0; i<nLevels; i++)
-    {
-        mvInvScaleFactor[i]=1.0f/mvScaleFactor[i];
-        mvInvLevelSigma2[i]=1.0f/mvLevelSigma2[i];
-    }
-    cout << nLevels << endl;
-}
-
 } // ORB_SLAM3

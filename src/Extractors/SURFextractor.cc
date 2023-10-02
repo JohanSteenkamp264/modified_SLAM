@@ -1,30 +1,27 @@
 #include "Extractors/SURFextractor.h"
 
 
-#include <opencv2/features2d.hpp>
-#include <opencv2/xfeatures2d.hpp>
-
 using namespace std;
 
 namespace ORB_SLAM3
 {
+SURFModel::SURFModel(double _hessianThreshold, int _nOctaves, int _nOctaveLayers, bool _extended, bool _upright)
+:hessianThreshold(_hessianThreshold), nOctaves(_nOctaves), nOctaveLayers(_nOctaveLayers), extended(_extended), upright(_upright)
+{
+    surf = cv::xfeatures2d::SURF::create(hessianThreshold, nOctaves, nOctaveLayers, extended, upright);
+}
+
 
 bool SURFModel::Detect(const cv::Mat &image, std::vector<cv::KeyPoint> &vKeyPoints, cv::Mat &localDescriptors, cv::Mat &globalDescriptors,
                         int nKeypointsNum, float threshold)
 {
     cv::Mat tDescriptors;
-    cv::Ptr<cv::xfeatures2d::SURF> surf = cv::xfeatures2d::SURF::create(100, 1);
     surf->detectAndCompute(image, cv::Mat(), vKeyPoints, tDescriptors);
-
-    for(int id_kp = 0; id_kp < vKeyPoints.size(); id_kp++){
-        vKeyPoints[id_kp].octave = 0.0;
-        vKeyPoints[id_kp].size = 31.0;
-    }
-
+    
     if(vKeyPoints.size() > nKeypointsNum)
     {
         tDescriptors = tDescriptors.rowRange(0,nKeypointsNum);
-	vKeyPoints.resize(nKeypointsNum);
+	    vKeyPoints.resize(nKeypointsNum);
     }
 
     tDescriptors.copyTo(localDescriptors);
@@ -42,18 +39,12 @@ bool SURFModel::Detect(const cv::Mat &image, std::vector<cv::KeyPoint> &vKeyPoin
                         int nKeypointsNum, float threshold)
 {
     cv::Mat tDescriptors;
-    cv::Ptr<cv::xfeatures2d::SURF> surf = cv::xfeatures2d::SURF::create(100, 1);
     surf->detectAndCompute(image, cv::Mat(), vKeyPoints, tDescriptors);
-
-    for(int id_kp = 0; id_kp < vKeyPoints.size(); id_kp++){
-        vKeyPoints[id_kp].octave = 0.0;
-        vKeyPoints[id_kp].size = 31.0;
-    }
 
     if(vKeyPoints.size() > nKeypointsNum)
     {
         tDescriptors = tDescriptors.rowRange(0,nKeypointsNum);
-	vKeyPoints.resize(nKeypointsNum);
+	    vKeyPoints.resize(nKeypointsNum);
     }
 
     tDescriptors.copyTo(localDescriptors);
