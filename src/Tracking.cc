@@ -680,18 +680,35 @@ void Tracking::newParameterLoader(Settings *settings) {
     mModelType = settings->modelType();
     int nFeatures = settings->nFeatures();
     int nLevels = settings->nLevels();
-    float fThreshold = settings->threshold();
     float fScaleFactor = settings->scaleFactor();
 
     auto vpModels = GetModelVec();
     /* TO EDIT change HFextractor constructor to not use setting(vpModels) instead of (nFeatures,fThreshold,fScaleFactor,nLevels,vpModels)*/
-    mpExtractorLeft = new HFextractor(nFeatures,fThreshold,fScaleFactor,nLevels,vpModels);
+    if(settings->bPyrimid())
+    {
+        // Use pyrimid and construct nLevels number of feature extractor
+        mpExtractorLeft = new HFextractor(nFeatures,fScaleFactor,nLevels,vpModels);
 
-    if(mSensor==System::STEREO || mSensor==System::IMU_STEREO)
-        mpExtractorRight = new HFextractor(nFeatures,fThreshold,fScaleFactor,nLevels,vpModels);
+        if(mSensor==System::STEREO || mSensor==System::IMU_STEREO)
+            mpExtractorRight = new HFextractor(nFeatures,fScaleFactor,nLevels,vpModels);
 
-    if(mSensor==System::MONOCULAR || mSensor==System::IMU_MONOCULAR)
-        mpIniExtractor = new HFextractor(5*nFeatures,fThreshold,fScaleFactor,nLevels,vpModels);
+        if(mSensor==System::MONOCULAR || mSensor==System::IMU_MONOCULAR)
+            mpIniExtractor = new HFextractor(5*nFeatures,fScaleFactor,nLevels,vpModels);
+    }
+    else
+    {
+        // allow method to perform scaling and calculate scaling parameters
+        mpExtractorLeft = new HFextractor(nFeatures,vpModels);
+
+        if(mSensor==System::STEREO || mSensor==System::IMU_STEREO)
+            mpExtractorRight = new HFextractor(nFeatures,vpModels);
+
+        if(mSensor==System::MONOCULAR || mSensor==System::IMU_MONOCULAR)
+            mpIniExtractor = new HFextractor(5*nFeatures,vpModels);
+    }
+
+    MapPoint::mnScaleLevels = mpExtractorLeft->GetLevels();
+    MapPoint::mfScaleFactor = mpExtractorLeft->GetScaleFactor();
 
     //IMU parameters
     Sophus::SE3f Tbc = settings->Tbc();

@@ -149,7 +149,7 @@ endif()
 
 # Build examples
 # Monocular examples
-set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${PROJECT_SOURCE_DIR}/bin/Examples/Monocular)
+set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${PROJECT_SOURCE_DIR}/tmp/Examples/Monocular)
 
 add_executable(mono_euroc
         Examples/Monocular/mono_euroc.cc)

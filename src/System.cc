@@ -114,8 +114,6 @@ System::System(const string &strSettingsFile, const eSensor sensor,
 
     InitAllModels(settings_);
     /*TO EDIT get values from feature extractor method*/
-    MapPoint::mnScaleLevels = settings_->nLevels();
-    MapPoint::mfScaleFactor = settings_->scaleFactor();
 
     //Create KeyFrame Database
     // TODO: The initialization of KeyFrameDatabase

@@ -8,18 +8,36 @@ using namespace std;
 namespace ORB_SLAM3
 {
 
+SIFTModel::SIFTModel(int _nfeatures, int _nOctaveLayers, double _contrastThreshold, double _edgeThreshold, double _sigma)
+:nfeatures(_nfeatures), nOctaveLayers(_nOctaveLayers), contrastThreshold(_contrastThreshold), edgeThreshold(_edgeThreshold), sigma(_sigma)
+{
+    sift = cv::SIFT::create(nfeatures, nOctaveLayers, contrastThreshold, edgeThreshold, sigma);
+}
+
 bool SIFTModel::Detect(const cv::Mat &image, std::vector<cv::KeyPoint> &vKeyPoints, cv::Mat &localDescriptors, cv::Mat &globalDescriptors,
                         int nKeypointsNum, float threshold)
 {
+    //cout << "Extracting features" << endl;
     cv::Mat tDescriptors;
-    cv::Ptr<cv::SIFT> sift = cv::SIFT::create(nKeypointsNum);
     sift->detectAndCompute(image, cv::Mat(), vKeyPoints, tDescriptors);
 
+    int octave = 0;
+    int layer = 0;
+
     for(int id_kp = 0; id_kp < vKeyPoints.size(); id_kp++){
-        vKeyPoints[id_kp].octave = 0.0;
-        vKeyPoints[id_kp].size = 31.0;
+        octave = (vKeyPoints[id_kp].octave + 1)&255;
+        layer = (vKeyPoints[id_kp].octave >> 8) & 255;
+
+        //cout << octave << " " << layer << endl;
+
+        octave = octave < 128 ? octave : (-128 | octave);  
+
+        vKeyPoints[id_kp].octave = (octave*3) + layer - 1;
+        vKeyPoints[id_kp].size = 16.0*octave;
+        //cout << vKeyPoints[id_kp].octave << " " << octave << " " << layer << endl;
     }
     tDescriptors.copyTo(localDescriptors);
+    //cout << "Extracting " << vKeyPoints.size() <<  " features" << endl;
 
     globalDescriptors = cv::Mat(4096, 1, CV_32F);
     float* vResGlobalDescriptor = tDescriptors.ptr<float>(0);
@@ -34,20 +52,63 @@ bool SIFTModel::Detect(const cv::Mat &image, std::vector<cv::KeyPoint> &vKeyPoin
                         int nKeypointsNum, float threshold)
 {
     cv::Mat tDescriptors;
-    cv::Ptr<cv::SIFT> sift = cv::SIFT::create(nKeypointsNum);
     sift->detectAndCompute(image, cv::Mat(), vKeyPoints, tDescriptors);
 
+    int octave = 0;
+    int layer = 0;
+
     for(int id_kp = 0; id_kp < vKeyPoints.size(); id_kp++){
-        vKeyPoints[id_kp].octave = 0.0;
-        vKeyPoints[id_kp].size = 31.0;
+        octave = (vKeyPoints[id_kp].octave + 1)&255;
+        layer = (vKeyPoints[id_kp].octave >> 8) & 255;
+
+        //cout << octave << " " << layer << endl;
+
+        octave = octave < 128 ? octave : (-128 | octave);  
+
+        vKeyPoints[id_kp].octave = (octave*3) + layer - 1;
+        vKeyPoints[id_kp].size = 16.0*octave;
+        //cout << vKeyPoints[id_kp].octave << " " << octave << " " << layer << endl;
     }
     tDescriptors.copyTo(localDescriptors);
+
+    cout << "Extracting " << vKeyPoints.size() <<  " features" << endl;
+
     return true;
 }
 
 bool SIFTModel::Detect(const cv::Mat &intermediate, cv::Mat &globalDescriptors)
 {
     intermediate.copyTo(globalDescriptors);
+}
+
+bool SIFTModel::getScaleValues(float &scaleFactor, int &nLevels, std::vector<float> & mvScaleFactor, std::vector<float> & mvInvScaleFactor,
+                                std::vector<float> & mvLevelSigma2, std::vector<float> &mvInvLevelSigma2)
+{
+    scaleFactor = pow(2.0,1.0/3.0)  ;
+    nLevels = 3*nOctaveLayers + 3;
+    mvScaleFactor.resize(nLevels);
+    mvLevelSigma2.resize(nLevels);
+
+    cout << nLevels << " " << scaleFactor << endl;
+
+    mvScaleFactor[0]=1.0f;
+    mvLevelSigma2[0]=sigma;
+
+    for(int i=1; i<nLevels; i++)
+    {
+        mvScaleFactor[i]=mvScaleFactor[i-1]*scaleFactor;
+        mvLevelSigma2[i]=mvScaleFactor[i]*mvScaleFactor[i];
+    }
+    cout << nLevels << endl;
+
+    mvInvScaleFactor.resize(nLevels);
+    mvInvLevelSigma2.resize(nLevels);
+    for(int i=0; i<nLevels; i++)
+    {
+        mvInvScaleFactor[i]=1.0f/mvScaleFactor[i];
+        mvInvLevelSigma2[i]=1.0f/mvLevelSigma2[i];
+    }
+    cout << nLevels << endl;
 }
 
 } // ORB_SLAM3

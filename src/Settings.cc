@@ -494,6 +494,10 @@ namespace ORB_SLAM3 {
         cout << "\tNumber of Features : " << nFeatures_ << endl;
         cout << "\tNeed RGB : " << bNeedRGB_ << endl;
         cout << "\tPyrimid : " << bPyrimid_ << endl;
+        if(bPyrimid_){
+            scaleFactor_ = readParameter<float>(fSettings,"Extractor.scaleFactor",found);
+            nLevels_ = readParameter<int>(fSettings,"Extractor.nLevels",found);
+        }
         /*
         scaleFactor_ = readParameter<float>(fSettings,"Extractor.scaleFactor",found);
         nLevels_ = readParameter<int>(fSettings,"Extractor.nLevels",found);
@@ -690,9 +694,6 @@ namespace ORB_SLAM3 {
         output << "\t-Scale factor of image pyramid: " << settings.scaleFactor_ << endl;
         output << "\t-Levels of image pyramid: " << settings.nLevels_ << endl;
         output << "\t-Features per image: " << settings.nFeatures_ << endl;
-        output << "\t-Detector threshold: " << settings.threshold_ << endl;
-        output << "\t-Load model path: " << settings.strModelPath_ << endl;
-
         return output;
     }
 };

@@ -52,7 +52,8 @@ public:
 
     virtual ModelType Type(void) = 0;
     
-    virtual bool getScaleValues(float &scaleFactor, std::vector<float> & mvScaleFactor, std::vector<float> & mvInvScaleFactor, std::vector<float> & mvLevelSigma2, std::vector<float> &mvInvLevelSigma2) = 0;
+    virtual bool getScaleValues(float &scaleFactor, int &nLevels, std::vector<float> & mvScaleFactor, std::vector<float> & mvInvScaleFactor,
+                                std::vector<float> & mvLevelSigma2, std::vector<float> &mvInvLevelSigma2) = 0;
 };
 
 
@@ -60,17 +61,15 @@ class Settings;
 
 void InitAllModels(Settings* settings);
 
-void InitAllModels(const std::string& strModelPath, ModelType modelType, cv::Size ImSize, int nLevels, float scaleFactor);
-
 std::vector<BaseModel*> GetModelVec(void);
 
 BaseModel* GetGlobalModel(void);
 
-BaseModel* InitSIFTModel(ModelDetectionMode mode, cv::Vec4i inputShape);
+BaseModel* InitSIFTModel(ModelDetectionMode mode, Settings* settings);
 
-BaseModel* InitSURFModel(ModelDetectionMode mode, cv::Vec4i inputShape);
+BaseModel* InitSURFModel(ModelDetectionMode mode, Settings* settings);
 
-BaseModel* InitKAZEModel(ModelDetectionMode mode, cv::Vec4i inputShape);
+BaseModel* InitKAZEModel(ModelDetectionMode mode, Settings* settings);
 
 std::vector<cv::KeyPoint> DistributeOctTree(const std::vector<cv::KeyPoint>& vToDistributeKeys, const int minX,
                                            const int maxX, const int minY, const int maxY, const int N);

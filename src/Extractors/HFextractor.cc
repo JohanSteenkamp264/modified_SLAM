@@ -18,22 +18,26 @@ const int PATCH_SIZE = 31;
 const int HALF_PATCH_SIZE = 15;
 const int EDGE_THRESHOLD = 19;
 
-HFextractor::HFextractor(int _nfeatures, float _threshold, BaseModel* _pModels):
-    nfeatures(_nfeatures), threshold(_threshold)
+HFextractor::HFextractor(int _nfeatures, const std::vector<BaseModel*>& _vpModels):
+    nfeatures(_nfeatures), mvpModels(_vpModels)
 {
-    mvpModels.resize(1);
-    mvpModels[0] = _pModels;
-    scaleFactor = 1.0;
-    nlevels = 1;
+    // (use_pyrimid) == false constructor
+    nlevels = 3*4 + 3;
+    scaleFactor = pow(2.0,1.0/(3))  ;
     mvScaleFactor.resize(nlevels);
     mvLevelSigma2.resize(nlevels);
+
+    cout << nlevels << " " << scaleFactor << endl;
+
     mvScaleFactor[0]=1.0f;
-    mvLevelSigma2[0]=1.0f;
+    mvLevelSigma2[0]=1.6;
+
     for(int i=1; i<nlevels; i++)
     {
         mvScaleFactor[i]=mvScaleFactor[i-1]*scaleFactor;
-        mvLevelSigma2[i]=mvScaleFactor[i]*mvScaleFactor[i];
+        mvLevelSigma2[i]=mvLevelSigma2[i-1]*mvScaleFactor[i]*mvScaleFactor[i];
     }
+    cout << nlevels << endl;
 
     mvInvScaleFactor.resize(nlevels);
     mvInvLevelSigma2.resize(nlevels);
@@ -42,21 +46,11 @@ HFextractor::HFextractor(int _nfeatures, float _threshold, BaseModel* _pModels):
         mvInvScaleFactor[i]=1.0f/mvScaleFactor[i];
         mvInvLevelSigma2[i]=1.0f/mvLevelSigma2[i];
     }
+    cout << nlevels << endl;
 
-    mvImagePyramid.resize(nlevels);
-
-    mnFeaturesPerLevel.resize(nlevels);
-    float factor = 1.0f / scaleFactor;
-    float nDesiredFeaturesPerScale = nfeatures*(1 - factor)/(1 - (float)pow((double)factor, (double)nlevels));
-
-    int sumFeatures = 0;
-    for( int level = 0; level < nlevels-1; level++ )
-    {
-        mnFeaturesPerLevel[level] = cvRound(nDesiredFeaturesPerScale);
-        sumFeatures += mnFeaturesPerLevel[level];
-        nDesiredFeaturesPerScale *= factor;
-    }
-    mnFeaturesPerLevel[nlevels-1] = std::max(nfeatures - sumFeatures, 0);
+    mvImagePyramid.resize(1);
+    mnFeaturesPerLevel.resize(1);
+    mnFeaturesPerLevel[0] = nfeatures;
 
     //This is for orientation
     // pre-compute the end of a row in a circular patch
@@ -79,9 +73,9 @@ HFextractor::HFextractor(int _nfeatures, float _threshold, BaseModel* _pModels):
 }
 
 
-HFextractor::HFextractor(int _nfeatures, float _threshold, float _scaleFactor, 
+HFextractor::HFextractor(int _nfeatures, float _scaleFactor, 
                         int _nlevels, const std::vector<BaseModel*>& _vpModels):
-        nfeatures(_nfeatures), threshold(_threshold), mvpModels(_vpModels)
+        nfeatures(_nfeatures), mvpModels(_vpModels)
 {
     scaleFactor = _scaleFactor;
     nlevels = _nlevels;
@@ -145,7 +139,9 @@ int HFextractor::operator() (const cv::Mat &image, std::vector<cv::KeyPoint>& vK
     if (image.empty() || image.type() != CV_8UC1) return -1;
     
     int res = -1;
-    if (nlevels == 1) res = ExtractSingleLayer(image, vKeyPoints, localDescriptors, globalDescriptors);
+    if (mvpModels.size() == 1) {
+        res = ExtractSingleLayer(image, vKeyPoints, localDescriptors, globalDescriptors);
+    }
     else
     {
     	res = ExtractMultiLayers(image, vKeyPoints, localDescriptors, globalDescriptors);

@@ -104,6 +104,8 @@ namespace ORB_SLAM3 {
         bool bNeedRGB() {return bNeedRGB_;}
         bool bPyrimid() {return bPyrimid_;}
         int nFeatures() {return nFeatures_;}
+        int nLevels() {return nLevels_;}
+        float scaleFactor() {return scaleFactor_;}
 
         float keyFrameSize() {return keyFrameSize_;}
         float keyFrameLineWidth() {return keyFrameLineWidth_;}
@@ -212,6 +214,9 @@ namespace ORB_SLAM3 {
         ModelType modelType_;
         bool bNeedRGB_;
         bool bPyrimid_;
+        int nFeatures_;
+        float scaleFactor_;
+        int nLevels_;
 
         /*
          * Viewer stuff

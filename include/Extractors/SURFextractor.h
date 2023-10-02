@@ -11,7 +11,7 @@ namespace ORB_SLAM3
 class SURFModel: public BaseModel
 {
 public:
-    SURFModel(){};
+    SURFModel(Settings* settings){};
     ~SURFModel(){};
     bool Detect(const cv::Mat &image, std::vector<cv::KeyPoint> &vKeyPoints, cv::Mat &localDescriptors, cv::Mat &globalDescriptors,
                         int nKeypointsNum, float threshold) override;

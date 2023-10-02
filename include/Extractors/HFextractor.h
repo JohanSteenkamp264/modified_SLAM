@@ -15,9 +15,9 @@ class HFextractor
 {
 public:
 
-    HFextractor(int nfeatures, float threshold, BaseModel* pModels);
+    HFextractor(int nfeatures,  const std::vector<BaseModel*>& vpModels);
 
-    HFextractor(int nfeatures, float threshold, float scaleFactor, 
+    HFextractor(int nfeatures, float scaleFactor, 
                 int nlevels, const std::vector<BaseModel*>& vpModels);
 
     ~HFextractor(){}
@@ -58,7 +58,7 @@ public:
 
 protected:
 
-    double scaleFactor;
+    float scaleFactor;
     int nlevels;
     bool bUseOctTree;
 

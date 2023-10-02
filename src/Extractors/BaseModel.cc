@@ -19,49 +19,72 @@ void InitAllModels(Settings* settings)
 {
     //InitAllModels(settings->strModelPath(), settings->modelType(), settings->newImSize(), settings->nLevels(), settings->scaleFactor());
     /*TO EDIT initialize model/s based on custom parameters*/
-    bool found;
-    if(settings.readParameter<int<(settings, "Extractor.Pyrimid", found) > 0)
-    {
-        // Employ Pyrimid layered extraction
-        
-    }
-    else
-    {
-        // Method self employs pyrimid get scale values from extraction method
-        
-    }
-}
 
-void InitAllModels(const std::string& strModelPath, ModelType modelType, cv::Size ImSize, int nLevels, float scaleFactor)
-{
-    // Init Local Models
     if (gvpModels.size())
     {
         for (auto pModel : gvpModels) delete pModel;
         gvpModels.clear();
     }
-
-    gvpModels.reserve(nLevels);
-    float scale = 1.0f;
-    for (int level = 0; level < nLevels; ++level)
+    bool found;
+    ModelType modelType = settings->modelType();
+    cv::Size ImSize = settings->newImSize();
+    if(settings->bPyrimid())
     {
-        cv::Vec4i inputShape{1, cvRound(ImSize.height * scale), cvRound(ImSize.width * scale), 1};
+        // Employ Pyrimid layered extraction
+        int nLevels = settings->readParameter<int>(settings->fSettings,"Extractor.nLevels",found);
+        float scaleFactor = settings->readParameter<float>(settings->fSettings,"Extractor.scaleFactor",found);
+        gvpModels.reserve(nLevels);
+        float scale = 1.0f;
+        for (int level = 0; level < nLevels; ++level)
+        {
+            cv::Vec4i inputShape{1, cvRound(ImSize.height * scale), cvRound(ImSize.width * scale), 1};
+            BaseModel *pNewModel = nullptr;
+            ModelDetectionMode mode;
+            if(modelType == oCVSIFTModel){
+                if (level == 0) mode = kImageToLocalAndGlobal;
+                else mode = kImageToLocal;
+                pNewModel = InitSIFTModel(mode, settings);
+            }
+            else if(modelType == oCVSURFModel){
+                if (level == 0) mode = kImageToLocalAndGlobal;
+                else mode = kImageToLocal;
+                pNewModel = InitSURFModel(mode, settings);
+            }
+            else if(modelType == oCVKAZEModel){
+                if (level == 0) mode = kImageToLocalAndGlobal;
+                else mode = kImageToLocal;
+                pNewModel = InitKAZEModel(mode, settings);
+            }
+            else
+            {
+                cerr << "Wrong type of model!" << endl;
+                exit(-1);
+            }
+            gvpModels.emplace_back(pNewModel);
+            scale /= scaleFactor;
+        }
+    }
+    else
+    {
+        // Method self employs pyrimid get scale values from extraction method
+        gvpModels.reserve(1);
         BaseModel *pNewModel = nullptr;
         ModelDetectionMode mode;
+        int level = 0;
         if(modelType == oCVSIFTModel){
             if (level == 0) mode = kImageToLocalAndGlobal;
             else mode = kImageToLocal;
-            pNewModel = InitSIFTModel(mode, inputShape);
+            pNewModel = InitSIFTModel(mode, settings);
         }
-	    else if(modelType == oCVSURFModel){
+        else if(modelType == oCVSURFModel){
             if (level == 0) mode = kImageToLocalAndGlobal;
             else mode = kImageToLocal;
-            pNewModel = InitSURFModel(mode, inputShape);
+            pNewModel = InitSURFModel(mode, settings);
         }
-	    else if(modelType == oCVKAZEModel){
+        else if(modelType == oCVKAZEModel){
             if (level == 0) mode = kImageToLocalAndGlobal;
             else mode = kImageToLocal;
-            pNewModel = InitKAZEModel(mode, inputShape);
+            pNewModel = InitKAZEModel(mode, settings);
         }
         else
         {
@@ -69,34 +92,33 @@ void InitAllModels(const std::string& strModelPath, ModelType modelType, cv::Siz
             exit(-1);
         }
         gvpModels.emplace_back(pNewModel);
-        scale /= scaleFactor;
     }
-
     // Init Global Model
-    if (gpGlobalModel) delete gpGlobalModel;
+        if (gpGlobalModel) delete gpGlobalModel;
 
-    cv::Vec4i inputShape{1, ImSize.height / 8, ImSize.width / 8, 96};
-    BaseModel *pNewModel = nullptr;
-    ModelDetectionMode mode;
-    if (modelType == oCVSIFTModel)
-    {
-        pNewModel = nullptr;
-    }
-    else if (modelType == oCVSURFModel)
-    {
-        pNewModel = nullptr;
-    }
-    else if (modelType == oCVKAZEModel)
-    {
-        pNewModel = nullptr;
-    }
-    else
-    {
-        cerr << "Wrong type of model!" << endl;
-        exit(-1);
-    }
-    gpGlobalModel = pNewModel;
+        cv::Vec4i inputShape{1, ImSize.height / 8, ImSize.width / 8, 96};
+        BaseModel *pNewModel = nullptr;
+        ModelDetectionMode mode;
+        if (modelType == oCVSIFTModel)
+        {
+            pNewModel = nullptr;
+        }
+        else if (modelType == oCVSURFModel)
+        {
+            pNewModel = nullptr;
+        }
+        else if (modelType == oCVKAZEModel)
+        {
+            pNewModel = nullptr;
+        }
+        else
+        {
+            cerr << "Wrong type of model!" << endl;
+            exit(-1);
+        }
+        gpGlobalModel = pNewModel;
 }
+
 
 std::vector<BaseModel*> GetModelVec(void)
 {
@@ -121,15 +143,66 @@ BaseModel* GetGlobalModel(void)
 /* TO EDIT BaseModel* InitSIFTModel(Settings* settings)
     chnage initialization to customized opencv perameters
 */
-BaseModel* InitSIFTModel(ModelDetectionMode mode, cv::Vec4i inputShape)
+BaseModel* InitSIFTModel(ModelDetectionMode mode, Settings* settings)
 {
     BaseModel* pModel;
-    pModel = new SIFTModel();
+    bool found = false;
+    int nfeatures = settings->nFeatures();
+
+    int nOctaveLayers = settings->readParameter<int>(settings->fSettings,"Extractor.SIFT.nOctaveLayers",found, false);
+    if(found)
+    {
+        cout << "Found Extractor.SIFT.nOctaveLayers in settings" << endl;
+    }
+    else
+    {
+        nOctaveLayers = 3;
+        cout << "Did not find Extractor.SIFT.nOctaveLayers in settings, using default" << nOctaveLayers << endl;
+    }
+
+    double contrastThreshold = settings->readParameter<double>(settings->fSettings,"Extractor.SIFT.contrastThreshold",found, false);
+    if(found)
+    {
+        cout << "Found Extractor.SIFT.contrastThreshold in settings" << endl;
+    }
+    else
+    {
+        contrastThreshold = 0.04;
+        cout << "Did not find Extractor.SIFT.contrastThreshold in settings, using default" << contrastThreshold << endl;
+    }
+
+    double edgeThreshold = settings->readParameter<double>(settings->fSettings,"Extractor.SIFT.edgeThreshold",found, false);
+    if(found)
+    {
+        cout << "Found Extractor.SIFT.edgeThreshold in settings" << endl;
+    }
+    else
+    {
+        edgeThreshold = 10.0;
+        cout << "Did not find Extractor.SIFT.edgeThreshold in settings, using default" << edgeThreshold << endl;
+    }
+
+    double sigma = settings->readParameter<double>(settings->fSettings,"Extractor.SIFT.sigma",found, false);
+    if(found)
+    {
+        cout << "Found Extractor.SIFT.sigma in settings" << endl;
+    }
+    else
+    {
+        sigma = 1.6;
+        cout << "Did not find Extractor.SIFT.sigma in settings, using default" << sigma << endl;
+    }
+
+    pModel = new SIFTModel(nfeatures, nOctaveLayers, contrastThreshold, edgeThreshold, sigma);
     if (pModel->IsValid())
     {
         cout << "Successfully created OpenCV SIFT."
-             << " Mode: " << gStrModelDetectionName[mode]
-             << " Shape: " << inputShape.t() << endl;
+             << " Mode: " << gStrModelDetectionName[mode]<< endl;
+        cout << "nfeatures: " << nfeatures << endl
+             << "nOctaveLayers: " << nOctaveLayers << endl
+             << "contrastThreshold: " << contrastThreshold << endl
+             << "edgeThreshold: " << edgeThreshold << endl
+             << "sigma: " << sigma << endl;
     }
     else exit(-1);
 
@@ -138,8 +211,8 @@ BaseModel* InitSIFTModel(ModelDetectionMode mode, cv::Vec4i inputShape)
 
 /* TO EDIT BaseModel* InitSURFModel(Settings* settings)
     chnage initialization to customized opencv perameters
-*/
-BaseModel* InitSURFModel(ModelDetectionMode mode, cv::Vec4i inputShape)
+
+BaseModel* InitSURFModel(ModelDetectionMode mode, Settings* settings)
 {
     BaseModel* pModel;
     pModel = new SURFModel();
@@ -153,11 +226,17 @@ BaseModel* InitSURFModel(ModelDetectionMode mode, cv::Vec4i inputShape)
 
     return pModel;
 }
+*/
+BaseModel* InitSURFModel(ModelDetectionMode mode, Settings* settings)
+{
+    cout << "SURF Feature extractor not implemeted yet" << endl;
+    exit(-1);
+}
 
 /* TO EDIT BaseModel* InitKAZEModel(Settings* settings)
     chnage initialization to customized opencv perameters
-*/
-BaseModel* InitKAZEModel(ModelDetectionMode mode, cv::Vec4i inputShape)
+
+BaseModel* InitKAZEModel(ModelDetectionMode mode, Settings* settings)
 {
     BaseModel* pModel;
     pModel = new KAZEModel();
@@ -170,6 +249,12 @@ BaseModel* InitKAZEModel(ModelDetectionMode mode, cv::Vec4i inputShape)
     else exit(-1);
 
     return pModel;
+}
+*/
+BaseModel* InitKAZEModel(ModelDetectionMode mode, Settings* settings)
+{
+    cout << "SURF Feature extractor not implemeted yet" << endl;
+    exit(-1);
 }
 
 
