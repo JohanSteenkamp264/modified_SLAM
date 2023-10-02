@@ -1,0 +1,3 @@
+[submodule "Thirdparty/pyslam"]
+	path = Thirdparty/pyslam
+	url = https://github.com/luigifreda/pyslam.git

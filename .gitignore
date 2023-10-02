@@ -2,7 +2,10 @@
 build/
 bin/
 lib/
-..gitignore.swp 
+Results/
+tmp/
+..gitignore.swp
+.gitignore.save 
 
 # Ignore thirdparty build and lib
 Thirdparty/**/build/
