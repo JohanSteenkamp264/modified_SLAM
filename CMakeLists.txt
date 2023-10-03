@@ -44,6 +44,8 @@ src/Extractors/HFextractor.cc
 src/Extractors/SIFTextractor.cc
 src/Extractors/SURFextractor.cc
 src/Extractors/KAZEextractor.cc
+src/Extractors/PythonCPPlink.cc
+src/Extractors/Superpointextractor.cc
 src/Matcher.cc
 src/FrameDrawer.cc
 src/Converter.cc
@@ -76,6 +78,8 @@ include/Extractors/BaseModel.h
 include/Extractors/SIFTextractor.h
 include/Extractors/SURFextractor.h
 include/Extractors/KAZEextractor.h
+include/Extractors/PythonCPPlink.h
+include/Extractors/Superpointextractor.h
 include/Matcher.h
 include/FrameDrawer.h
 include/Converter.h

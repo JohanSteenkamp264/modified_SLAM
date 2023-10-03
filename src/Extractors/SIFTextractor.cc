@@ -79,6 +79,7 @@ bool SIFTModel::Detect(const cv::Mat &image, std::vector<cv::KeyPoint> &vKeyPoin
 bool SIFTModel::Detect(const cv::Mat &intermediate, cv::Mat &globalDescriptors)
 {
     intermediate.copyTo(globalDescriptors);
+    return false;
 }
 
 } // ORB_SLAM3

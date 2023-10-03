@@ -105,6 +105,12 @@ HFextractor::HFextractor(int _nfeatures, Settings* settings, const std::vector<B
 
         determineLayers_wo_pyrimid(nOctaves, 1, 2.0, 1.0);
     }
+    else if (mvpModels[0]->Type() == SUPERPOINTModel)
+    {
+        cout << "Calculating Scale Values "<< endl;
+        determineLayers_wo_pyrimid(1, 1, 2.0, 1.0);
+        cout << "Scale values dalculated "<< endl;
+    }
     else
     {
         cerr << "Wrong type of model!" << endl;

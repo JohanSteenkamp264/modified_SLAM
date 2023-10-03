@@ -3,6 +3,7 @@
 #include "Extractors/SIFTextractor.h"
 #include "Extractors/SURFextractor.h"
 #include "Extractors/KAZEextractor.h"
+#include "Extractors/Superpointextractor.h"
 
 #include <unordered_set>
 #include <unordered_map>
@@ -55,6 +56,11 @@ void InitAllModels(Settings* settings)
                 else mode = kImageToLocal;
                 pNewModel = InitKAZEModel(mode, settings);
             }
+            else if(modelType == SUPERPOINTModel){
+                if (level == 0) mode = kImageToLocalAndGlobal;
+                else mode = kImageToLocal;
+                pNewModel = InitSuperPointModel(mode, settings);
+            }
             else
             {
                 cerr << "Wrong type of model!" << endl;
@@ -86,6 +92,11 @@ void InitAllModels(Settings* settings)
             else mode = kImageToLocal;
             pNewModel = InitKAZEModel(mode, settings);
         }
+        else if(modelType == SUPERPOINTModel){
+            if (level == 0) mode = kImageToLocalAndGlobal;
+            else mode = kImageToLocal;
+            pNewModel = InitSuperPointModel(mode, settings);
+        }
         else
         {
             cerr << "Wrong type of model!" << endl;
@@ -108,6 +119,10 @@ void InitAllModels(Settings* settings)
             pNewModel = nullptr;
         }
         else if (modelType == oCVKAZEModel)
+        {
+            pNewModel = nullptr;
+        }
+        else if (modelType == SUPERPOINTModel)
         {
             pNewModel = nullptr;
         }
@@ -381,6 +396,25 @@ BaseModel* InitKAZEModel(ModelDetectionMode mode, Settings* settings)
     exit(-1);
 }
 */
+
+BaseModel* InitSuperPointModel(ModelDetectionMode mode, Settings* settings)
+{
+    BaseModel* pModel;
+    bool found = false;
+    int nfeatures = settings->nFeatures();
+
+    pModel = new SuperPointModel(nfeatures);
+
+    if (pModel->IsValid())
+    {
+        cout    << "Successfully created pyslam SuperPoint."
+                << " Mode: " << gStrModelDetectionName[mode] << endl;
+        cout    << "nfeatures: " << nfeatures << endl;
+    }
+    else exit(-1);
+
+    return pModel;
+}
 
 void ExtractorNode::DivideNode(ExtractorNode &n1, ExtractorNode &n2, ExtractorNode &n3, ExtractorNode &n4)
 {

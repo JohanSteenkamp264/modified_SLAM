@@ -480,6 +480,9 @@ namespace ORB_SLAM3 {
         else if (type == "KAZE") {
             modelType_ = oCVKAZEModel;
         }
+        else if (type == "SUPERPOINT") {
+            modelType_ = SUPERPOINTModel;
+        }
         else {
             cerr << "Wrong extractor type in setting file!" << endl;
             exit(-1);

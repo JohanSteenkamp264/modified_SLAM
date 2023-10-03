@@ -10,7 +10,8 @@ namespace ORB_SLAM3
 enum ModelType {
     oCVSIFTModel,
     oCVSURFModel,
-    oCVKAZEModel
+    oCVKAZEModel,
+    SUPERPOINTModel
 };
 
 enum ModelDetectionMode {
@@ -67,6 +68,8 @@ BaseModel* InitSIFTModel(ModelDetectionMode mode, Settings* settings);
 BaseModel* InitSURFModel(ModelDetectionMode mode, Settings* settings);
 
 BaseModel* InitKAZEModel(ModelDetectionMode mode, Settings* settings);
+
+BaseModel* InitSuperPointModel(ModelDetectionMode mode, Settings* settings);
 
 std::vector<cv::KeyPoint> DistributeOctTree(const std::vector<cv::KeyPoint>& vToDistributeKeys, const int minX,
                                            const int maxX, const int minY, const int maxY, const int N);

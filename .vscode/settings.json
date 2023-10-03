@@ -78,6 +78,8 @@
         "ios": "cpp",
         "locale": "cpp",
         "queue": "cpp",
-        "stack": "cpp"
+        "stack": "cpp",
+        "csignal": "cpp",
+        "forward_list": "cpp"
     }
 }
