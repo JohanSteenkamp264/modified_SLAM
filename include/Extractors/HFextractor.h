@@ -65,6 +65,7 @@ protected:
     float scaleFactor;
     int nlevels;
     bool bUseOctTree;
+    bool bNeedRGB;
 
     std::vector<float> mvScaleFactor;
     std::vector<float> mvInvScaleFactor;    

@@ -189,6 +189,8 @@ public:
 
     float GetImageScale();
 
+    static string SettingsFile;
+
 #ifdef REGISTER_TIMES
     void InsertRectTime(double& time);
     void InsertResizeTime(double& time);

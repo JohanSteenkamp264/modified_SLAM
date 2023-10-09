@@ -50,17 +50,18 @@ Viewer.ViewpointF: 500.0
 #  - HFNetTF: the original HF-Net running in TensorFlow
 #  - HFNetRT: the HF-Net optimized by TensorRT
 #  - HFNetVINO: the HF-Net optimized by OpenVINO (Disabled because of the bad performance)
-Extractor.type: "SUPERPOINT" # [HFNetTF HFNetRT HFNetVINO]
+Extractor.type: "PYTHON" # [HFNetTF HFNetRT HFNetVINO]
+Extractor.Python.type: "R2D2"
 Extractor.KAZE.threshold: 0.0006
 
-Extractor.nFeatures: 1000 # Maximum numbers of features
+Extractor.nFeatures: 2000 # Maximum numbers of features
 
-Extractor.needRGB: 0 # convert images to Grayscale or provides RGB
+Extractor.needRGB: 1 # convert images to Grayscale or provides RGB
 
 Extractor.Pyrimid: 1 # construct pyrimid layer/ allow extraction method to construct scale pyrimids
 
 # Extractor: Scale factor between levels in the scale pyramid 	
-Extractor.scaleFactor: 1.4
+Extractor.scaleFactor: 1.2
 
 # Extractor: Number of levels in the scale pyramid	
 Extractor.nLevels: 4
@@ -68,8 +69,8 @@ Extractor.nLevels: 4
 #--------------------------------------------------------------------------------------------
 # Matcher Parameters
 #--------------------------------------------------------------------------------------------
-Matcher.TH_HIGH: 1.3
-Matcher.TH_LOW: 1.04
+Matcher.TH_HIGH: 3.0
+Matcher.TH_LOW: 2.8
 
 
 

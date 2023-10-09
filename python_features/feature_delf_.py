@@ -9,12 +9,11 @@ print(os.getcwd())
 
 sys.path.append("./Thirdparty/pyslam")
 
-from feature_superpoint import SuperPointFeature2D
-
+from feature_delf import DelfFeature2D
 
 class socket_superpoint:
     def __init__(self, port:int) -> None:
-        self.feature_extractor = SuperPointFeature2D()
+        self.feature_extractor = DelfFeature2D()
 
         print("Connecting to port ", port)	
         self.client_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
@@ -78,4 +77,7 @@ if __name__ == '__main__':
     global kVerbose
     kVerbose = False
     feature_extractor = socket_superpoint(sys.argv[1])
+    settings_file = sys.argv[2]
+    # customizze settings
+    
     feature_extractor.run()

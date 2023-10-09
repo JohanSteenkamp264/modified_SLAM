@@ -3,7 +3,7 @@
 #include "Extractors/SIFTextractor.h"
 #include "Extractors/SURFextractor.h"
 #include "Extractors/KAZEextractor.h"
-#include "Extractors/Superpointextractor.h"
+#include "Extractors/PythonFeatureExtractor.h"
 
 #include <unordered_set>
 #include <unordered_map>
@@ -56,10 +56,10 @@ void InitAllModels(Settings* settings)
                 else mode = kImageToLocal;
                 pNewModel = InitKAZEModel(mode, settings);
             }
-            else if(modelType == SUPERPOINTModel){
+            else if(modelType == PythonFeatureModel){
                 if (level == 0) mode = kImageToLocalAndGlobal;
                 else mode = kImageToLocal;
-                pNewModel = InitSuperPointModel(mode, settings);
+                pNewModel = InitPythonFeature(mode, settings);
             }
             else
             {
@@ -92,10 +92,10 @@ void InitAllModels(Settings* settings)
             else mode = kImageToLocal;
             pNewModel = InitKAZEModel(mode, settings);
         }
-        else if(modelType == SUPERPOINTModel){
+        else if(modelType == PythonFeatureModel){
             if (level == 0) mode = kImageToLocalAndGlobal;
             else mode = kImageToLocal;
-            pNewModel = InitSuperPointModel(mode, settings);
+            pNewModel = InitPythonFeature(mode, settings);
         }
         else
         {
@@ -122,7 +122,7 @@ void InitAllModels(Settings* settings)
         {
             pNewModel = nullptr;
         }
-        else if (modelType == SUPERPOINTModel)
+        else if (modelType == PythonFeatureModel)
         {
             pNewModel = nullptr;
         }
@@ -397,13 +397,13 @@ BaseModel* InitKAZEModel(ModelDetectionMode mode, Settings* settings)
 }
 */
 
-BaseModel* InitSuperPointModel(ModelDetectionMode mode, Settings* settings)
+BaseModel* InitPythonFeature(ModelDetectionMode mode, Settings* settings)
 {
     BaseModel* pModel;
     bool found = false;
     int nfeatures = settings->nFeatures();
 
-    pModel = new SuperPointModel(nfeatures);
+    pModel = new PythonFeature(nfeatures);
 
     if (pModel->IsValid())
     {

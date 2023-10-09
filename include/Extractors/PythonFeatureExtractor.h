@@ -16,11 +16,11 @@ using namespace std;
 namespace ORB_SLAM3
 {
 
-class SuperPointModel: public BaseModel
+class PythonFeature: public BaseModel
 {
 public:
-    SuperPointModel(int nfeatures);
-    ~SuperPointModel(){};
+    PythonFeature(int nfeatures);
+    ~PythonFeature(){};
     bool Detect(const cv::Mat &image, std::vector<cv::KeyPoint> &vKeyPoints, cv::Mat &localDescriptors, cv::Mat &globalDescriptors,
                         int nKeypointsNum, float threshold) override;
 
@@ -31,7 +31,7 @@ public:
 
     bool IsValid(void) override { return true; };
 
-    ModelType Type(void) override {return SUPERPOINTModel;};
+    ModelType Type(void) override {return PythonFeatureModel;};
 
 protected:
     void runSuperpoint(void);

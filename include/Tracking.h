@@ -171,6 +171,7 @@ public:
     vector<MapPoint*> GetLocalMapMPS();
 
     bool mbWriteStats;
+    bool bNeedRGB_;
 
 #ifdef REGISTER_TIMES
     void LocalMapStats2File(const std::string& strPathSaving);

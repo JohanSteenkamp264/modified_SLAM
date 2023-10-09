@@ -22,6 +22,7 @@ const int EDGE_THRESHOLD = 19;
 HFextractor::HFextractor(int _nfeatures, Settings* settings, const std::vector<BaseModel*>& _vpModels):
     nfeatures(_nfeatures), mvpModels(_vpModels)
 {
+    bNeedRGB = settings->bNeedRGB();
     bool found = false;
     if(mvpModels[0]->Type() == oCVSIFTModel){
         Size im_size = settings->newImSize();
@@ -105,10 +106,10 @@ HFextractor::HFextractor(int _nfeatures, Settings* settings, const std::vector<B
 
         determineLayers_wo_pyrimid(nOctaves, 1, 2.0, 1.0);
     }
-    else if (mvpModels[0]->Type() == SUPERPOINTModel)
+    else if (mvpModels[0]->Type() == PythonFeatureModel)
     {
         cout << "Calculating Scale Values "<< endl;
-        determineLayers_wo_pyrimid(1, 1, 2.0, 1.0);
+        determineLayers_wo_pyrimid(5, 1, 1.2, 1.0);
         cout << "Scale values dalculated "<< endl;
     }
     else
@@ -231,7 +232,26 @@ void HFextractor::determineLayers_wo_pyrimid(int _nOctaves, int _nLayersPerOctav
 int HFextractor::operator() (const cv::Mat &image, std::vector<cv::KeyPoint>& vKeyPoints,
                              cv::Mat &localDescriptors, cv::Mat &globalDescriptors)
 {
-    if (image.empty() || image.type() != CV_8UC1) return -1;
+    if (image.empty()){
+        cout << "Image empty" << endl;
+        return -1;
+    }
+    if (bNeedRGB)
+    {
+        if(image.type() != CV_8UC3) 
+        {
+            cout << "Image not of type CV_8UC3" << endl;
+            return -1;
+        }
+    }
+    else
+    {
+        if(image.type() != CV_8UC1) 
+        {
+            cout << "Image not of type CV_8UC1" << endl;
+            return -1;
+        }
+    }
     
     int res = -1;
     if (mvpModels.size() == 1) {

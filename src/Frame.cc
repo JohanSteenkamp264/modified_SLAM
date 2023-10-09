@@ -226,7 +226,6 @@ Frame::Frame(const cv::Mat &imGray, const cv::Mat &imDepth, const double &timeSt
     mTimeORB_Ext = std::chrono::duration_cast<std::chrono::duration<double,std::milli> >(time_EndExtORB - time_StartExtORB).count();
 #endif
 
-
     N = mvKeys.size();
 
     if(mvKeys.empty())
@@ -339,6 +338,7 @@ Frame::Frame(const cv::Mat &imGray, const double &timeStamp, HFextractor* extrac
     // This is done only for the first Frame (or after a change in the calibration)
     if(mbInitialComputations)
     {
+        cout << "Computing image bounds" << endl;
         ComputeImageBounds(imGray);
 
         mfGridElementWidthInv=static_cast<float>(FRAME_GRID_COLS)/static_cast<float>(mnMaxX-mnMinX);
@@ -352,6 +352,7 @@ Frame::Frame(const cv::Mat &imGray, const double &timeStamp, HFextractor* extrac
         invfy = 1.0f/fy;
 
         mbInitialComputations=false;
+        cout << "completed Computing image bounds" << endl;
     }
 
 

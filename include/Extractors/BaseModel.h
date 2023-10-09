@@ -11,7 +11,7 @@ enum ModelType {
     oCVSIFTModel,
     oCVSURFModel,
     oCVKAZEModel,
-    SUPERPOINTModel
+    PythonFeatureModel
 };
 
 enum ModelDetectionMode {
@@ -69,7 +69,7 @@ BaseModel* InitSURFModel(ModelDetectionMode mode, Settings* settings);
 
 BaseModel* InitKAZEModel(ModelDetectionMode mode, Settings* settings);
 
-BaseModel* InitSuperPointModel(ModelDetectionMode mode, Settings* settings);
+BaseModel* InitPythonFeature(ModelDetectionMode mode, Settings* settings);
 
 std::vector<cv::KeyPoint> DistributeOctTree(const std::vector<cv::KeyPoint>& vToDistributeKeys, const int minX,
                                            const int maxX, const int minY, const int maxY, const int N);

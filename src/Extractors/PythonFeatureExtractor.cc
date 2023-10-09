@@ -1,25 +1,27 @@
-#include "Extractors/Superpointextractor.h"
+#include "Extractors/PythonFeatureExtractor.h"
+#include "System.h"
+#include <string>
 
 using namespace std;
 
 namespace ORB_SLAM3
 {
-    cpp_python_link *SuperPointModel::link = nullptr;
-    std::mutex SuperPointModel::mMutexLink;
-    thread *SuperPointModel::thSuperpoint = nullptr;
+    cpp_python_link *PythonFeature::link = nullptr;
+    std::mutex PythonFeature::mMutexLink;
+    thread *PythonFeature::thSuperpoint = nullptr;
 
-    SuperPointModel::SuperPointModel(int _nfeatures)
+    PythonFeature::PythonFeature(int _nfeatures)
     :nfeatures(_nfeatures)
     {
         mMutexLink.lock();
         if(link == nullptr){
-        thSuperpoint = new thread(&ORB_SLAM3::SuperPointModel::runSuperpoint,this);
+        thSuperpoint = new thread(&ORB_SLAM3::PythonFeature::runSuperpoint,this);
            link = new cpp_python_link(12000);
         }
         mMutexLink.unlock();
     }
 
-    bool SuperPointModel::Detect(const cv::Mat &image, std::vector<cv::KeyPoint> &vKeyPoints, cv::Mat &localDescriptors, cv::Mat &globalDescriptors,
+    bool PythonFeature::Detect(const cv::Mat &image, std::vector<cv::KeyPoint> &vKeyPoints, cv::Mat &localDescriptors, cv::Mat &globalDescriptors,
                         int nKeypointsNum, float threshold) 
     {
         mMutexLink.lock();
@@ -29,11 +31,15 @@ namespace ORB_SLAM3
         link->recieve_features(vKeyPoints, tDescriptors);
         mMutexLink.unlock();        
 
-        if(vKeyPoints.size() > nKeypointsNum)
+        /*if(vKeyPoints.size() > nKeypointsNum)
         {
             tDescriptors = tDescriptors.rowRange(0,nKeypointsNum);
             vKeyPoints.resize(nKeypointsNum);
         }
+
+        for(size_t i = 0; i < vKeyPoints.size(); i++){
+            cout << vKeyPoints[i].octave << endl;
+        }*/
 
         tDescriptors.copyTo(localDescriptors);
 
@@ -47,7 +53,7 @@ namespace ORB_SLAM3
         return true;
     }
 
-    bool SuperPointModel::Detect(const cv::Mat &image, std::vector<cv::KeyPoint> &vKeyPoints, cv::Mat &localDescriptors,
+    bool PythonFeature::Detect(const cv::Mat &image, std::vector<cv::KeyPoint> &vKeyPoints, cv::Mat &localDescriptors,
                         int nKeypointsNum, float threshold)
     {
         mMutexLink.lock();
@@ -67,13 +73,14 @@ namespace ORB_SLAM3
         return true;
     }
 
-    bool SuperPointModel::Detect(const cv::Mat &intermediate, cv::Mat &globalDescriptors)
+    bool PythonFeature::Detect(const cv::Mat &intermediate, cv::Mat &globalDescriptors)
     {
         intermediate.copyTo(globalDescriptors);
         return false;
     }
 
-    void SuperPointModel::runSuperpoint(void){
-        system("bash -c 'python3 ./python_features/feature_Superpoint.py 12000'");
+    void PythonFeature::runSuperpoint(void){
+        string cmd = "bash -c 'python3 ./python_features/PythonFeature.py 12000 " + System::SettingsFile + "'";
+        system(cmd.c_str());
     }
 } //namespace ORB_SLAM3

@@ -724,6 +724,7 @@ void Tracking::newParameterLoader(Settings *settings) {
     mpImuCalib = new IMU::Calib(Tbc,Ng*sf,Na*sf,Ngw/sf,Naw/sf);
 
     mpImuPreintegratedFromLastKF = new IMU::Preintegrated(IMU::Bias(),*mpImuCalib);
+    bNeedRGB_ = settings->bNeedRGB();
 }
 
 void Tracking::SetLocalMapper(LocalMapping *pLocalMapper)
@@ -760,33 +761,50 @@ Sophus::SE3f Tracking::GrabImageStereo(const cv::Mat &imRectLeft, const cv::Mat 
     mImGray = imRectLeft;
     cv::Mat imGrayRight = imRectRight;
     mImRight = imRectRight;
-
-    if(mImGray.channels()==3)
-    {
-        //cout << "Image with 3 channels" << endl;
-        if(mbRGB)
-        {
-            cvtColor(mImGray,mImGray,cv::COLOR_RGB2GRAY);
-            cvtColor(imGrayRight,imGrayRight,cv::COLOR_RGB2GRAY);
-        }
-        else
-        {
-            cvtColor(mImGray,mImGray,cv::COLOR_BGR2GRAY);
-            cvtColor(imGrayRight,imGrayRight,cv::COLOR_BGR2GRAY);
+    if(bNeedRGB_){
+        if(mImGray.channels()==4){
+            //cout << "Image with 4 channels" << endl;
+            if(mbRGB)
+            {
+                cvtColor(mImGray,mImGray,cv::COLOR_RGBA2RGB);
+                cvtColor(imGrayRight,imGrayRight,cv::COLOR_RGBA2RGB);
+            }
+            else
+            {
+                cvtColor(mImGray,mImGray,cv::COLOR_BGRA2RGB);
+                cvtColor(imGrayRight,imGrayRight,cv::COLOR_BGRA2RGB);
+            }
         }
     }
-    else if(mImGray.channels()==4)
+    else
     {
-        //cout << "Image with 4 channels" << endl;
-        if(mbRGB)
+        if(mImGray.channels()==3)
         {
-            cvtColor(mImGray,mImGray,cv::COLOR_RGBA2GRAY);
-            cvtColor(imGrayRight,imGrayRight,cv::COLOR_RGBA2GRAY);
+            //cout << "Image with 3 channels" << endl;
+            if(mbRGB)
+            {
+                cvtColor(mImGray,mImGray,cv::COLOR_RGB2GRAY);
+                cvtColor(imGrayRight,imGrayRight,cv::COLOR_RGB2GRAY);
+            }
+            else
+            {
+                cvtColor(mImGray,mImGray,cv::COLOR_BGR2GRAY);
+                cvtColor(imGrayRight,imGrayRight,cv::COLOR_BGR2GRAY);
+            }
         }
-        else
+        else if(mImGray.channels()==4)
         {
-            cvtColor(mImGray,mImGray,cv::COLOR_BGRA2GRAY);
-            cvtColor(imGrayRight,imGrayRight,cv::COLOR_BGRA2GRAY);
+            //cout << "Image with 4 channels" << endl;
+            if(mbRGB)
+            {
+                cvtColor(mImGray,mImGray,cv::COLOR_RGBA2GRAY);
+                cvtColor(imGrayRight,imGrayRight,cv::COLOR_RGBA2GRAY);
+            }
+            else
+            {
+                cvtColor(mImGray,mImGray,cv::COLOR_BGRA2GRAY);
+                cvtColor(imGrayRight,imGrayRight,cv::COLOR_BGRA2GRAY);
+            }
         }
     }
 
@@ -823,20 +841,36 @@ Sophus::SE3f Tracking::GrabImageRGBD(const cv::Mat &imRGB,const cv::Mat &imD, co
 {
     mImGray = imRGB;
     cv::Mat imDepth = imD;
-
-    if(mImGray.channels()==3)
-    {
-        if(mbRGB)
-            cvtColor(mImGray,mImGray,cv::COLOR_RGB2GRAY);
-        else
-            cvtColor(mImGray,mImGray,cv::COLOR_BGR2GRAY);
+    if(bNeedRGB_){
+        cout << "Using RGB" << endl;
+        if(mImGray.channels()==4){
+            cout << "Image with 4 channels" << endl;
+            if(mbRGB)
+            {
+                cvtColor(mImGray,mImGray,cv::COLOR_RGBA2RGB);
+            }
+            else
+            {
+                cvtColor(mImGray,mImGray,cv::COLOR_BGRA2RGB);
+            }
+        }
     }
-    else if(mImGray.channels()==4)
+    else
     {
-        if(mbRGB)
-            cvtColor(mImGray,mImGray,cv::COLOR_RGBA2GRAY);
-        else
-            cvtColor(mImGray,mImGray,cv::COLOR_BGRA2GRAY);
+        if(mImGray.channels()==3)
+        {
+            if(mbRGB)
+                cvtColor(mImGray,mImGray,cv::COLOR_RGB2GRAY);
+            else
+                cvtColor(mImGray,mImGray,cv::COLOR_BGR2GRAY);
+        }
+        else if(mImGray.channels()==4)
+        {
+            if(mbRGB)
+                cvtColor(mImGray,mImGray,cv::COLOR_RGBA2GRAY);
+            else
+                cvtColor(mImGray,mImGray,cv::COLOR_BGRA2GRAY);
+        }
     }
 
     if((fabs(mDepthMapFactor-1.0f)>1e-5) || imDepth.type()!=CV_32F)
@@ -868,6 +902,7 @@ Sophus::SE3f Tracking::GrabImageRGBD(const cv::Mat &imRGB,const cv::Mat &imD, co
 Sophus::SE3f Tracking::GrabImageMonocular(const cv::Mat &im, const double &timestamp, string filename)
 {
     mImGray = im;
+
     if(mImGray.channels()==3)
     {
         if(mbRGB)
@@ -883,21 +918,43 @@ Sophus::SE3f Tracking::GrabImageMonocular(const cv::Mat &im, const double &times
             cvtColor(mImGray,mImGray,cv::COLOR_BGRA2GRAY);
     }
 
-    if (mSensor == System::MONOCULAR)
+    if(bNeedRGB_)
     {
-        if(mState==NOT_INITIALIZED || mState==NO_IMAGES_YET ||(lastID - initID) < mMaxFrames)
-            mCurrentFrame = Frame(mImGray,timestamp,mpIniExtractor,mpCamera,mDistCoef,mbf,mThDepth);
-        else
-            mCurrentFrame = Frame(mImGray,timestamp,mpExtractorLeft,mpCamera,mDistCoef,mbf,mThDepth);
-    }
-    else if(mSensor == System::IMU_MONOCULAR)
-    {
-        if(mState==NOT_INITIALIZED || mState==NO_IMAGES_YET)
+        if (mSensor == System::MONOCULAR)
         {
-            mCurrentFrame = Frame(mImGray,timestamp,mpIniExtractor,mpCamera,mDistCoef,mbf,mThDepth,&mLastFrame,*mpImuCalib);
+            if(mState==NOT_INITIALIZED || mState==NO_IMAGES_YET ||(lastID - initID) < mMaxFrames)
+                mCurrentFrame = Frame(im,timestamp,mpIniExtractor,mpCamera,mDistCoef,mbf,mThDepth);
+            else
+                mCurrentFrame = Frame(im,timestamp,mpExtractorLeft,mpCamera,mDistCoef,mbf,mThDepth);
         }
-        else
-            mCurrentFrame = Frame(mImGray,timestamp,mpExtractorLeft,mpCamera,mDistCoef,mbf,mThDepth,&mLastFrame,*mpImuCalib);
+        else if(mSensor == System::IMU_MONOCULAR)
+        {
+            if(mState==NOT_INITIALIZED || mState==NO_IMAGES_YET)
+            {
+                mCurrentFrame = Frame(im,timestamp,mpIniExtractor,mpCamera,mDistCoef,mbf,mThDepth,&mLastFrame,*mpImuCalib);
+            }
+            else
+                mCurrentFrame = Frame(im,timestamp,mpExtractorLeft,mpCamera,mDistCoef,mbf,mThDepth,&mLastFrame,*mpImuCalib);
+        }
+    }
+    else
+    {
+        if (mSensor == System::MONOCULAR)
+        {
+            if(mState==NOT_INITIALIZED || mState==NO_IMAGES_YET ||(lastID - initID) < mMaxFrames)
+                mCurrentFrame = Frame(mImGray,timestamp,mpIniExtractor,mpCamera,mDistCoef,mbf,mThDepth);
+            else
+                mCurrentFrame = Frame(mImGray,timestamp,mpExtractorLeft,mpCamera,mDistCoef,mbf,mThDepth);
+        }
+        else if(mSensor == System::IMU_MONOCULAR)
+        {
+            if(mState==NOT_INITIALIZED || mState==NO_IMAGES_YET)
+            {
+                mCurrentFrame = Frame(mImGray,timestamp,mpIniExtractor,mpCamera,mDistCoef,mbf,mThDepth,&mLastFrame,*mpImuCalib);
+            }
+            else
+                mCurrentFrame = Frame(mImGray,timestamp,mpExtractorLeft,mpCamera,mDistCoef,mbf,mThDepth,&mLastFrame,*mpImuCalib);
+        }
     }
 
     if (mState==NO_IMAGES_YET)

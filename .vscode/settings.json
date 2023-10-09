@@ -80,6 +80,10 @@
         "queue": "cpp",
         "stack": "cpp",
         "csignal": "cpp",
-        "forward_list": "cpp"
+        "forward_list": "cpp",
+        "core": "cpp",
+        "numericaldiff": "cpp",
+        "specialfunctions": "cpp",
+        "sparsecore": "cpp"
     }
 }
