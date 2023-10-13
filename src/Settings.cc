@@ -473,15 +473,27 @@ namespace ORB_SLAM3 {
         string type = readParameter<string>(fSettings, "Extractor.type",found);
         if (type == "SIFT") {
             modelType_ = oCVSIFTModel;
+            Matcher::TH_HIGH = 450.0;
+            Matcher::TH_LOW = 360.0;
         }
         else if (type == "SURF") {
             modelType_ = oCVSURFModel;
+            Matcher::TH_HIGH = 0.45;
+            Matcher::TH_LOW = 0.36;
         }
         else if (type == "KAZE") {
             modelType_ = oCVKAZEModel;
+            Matcher::TH_HIGH = 1.2;
+            Matcher::TH_LOW = 0.9;
         }
         else if (type == "PYTHON") {
             modelType_ = PythonFeatureModel;
+            string python_type = readParameter<string>(fSettings, "Extractor.Python.type",found);
+            if (python_type == "SUPERPOINT"){
+                Matcher::TH_HIGH = 1.3;
+                Matcher::TH_LOW = 1.0;
+            }
+
         }
         else {
             cerr << "Wrong extractor type in setting file!" << endl;
@@ -508,13 +520,17 @@ namespace ORB_SLAM3 {
         threshold_ = readParameter<float>(fSettings, "Extractor.threshold",found);
         strModelPath_ = readParameter<string>(fSettings, "Extractor.modelPath",found);
         */
+        float thr = readParameter<float>(fSettings,"Matcher.TH_HIGH",found, false);
+        if(found) Matcher::TH_HIGH = thr;
+        thr = readParameter<float>(fSettings,"Matcher.TH_LOW",found, false);
+        if(found) Matcher::TH_LOW = thr;
+
     }
 
     void Settings::readMatcherPerameters(cv::FileStorage& fSettings)
     {
         bool found;
-        Matcher::TH_LOW = readParameter<float>(fSettings,"Matcher.TH_LOW",found);
-        Matcher::TH_HIGH = readParameter<float>(fSettings,"Matcher.TH_HIGH",found);
+        
     }
 
     void Settings::readViewer(cv::FileStorage &fSettings) {

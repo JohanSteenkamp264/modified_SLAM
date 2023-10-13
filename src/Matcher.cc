@@ -1892,7 +1892,8 @@ namespace ORB_SLAM3
         assert(a.isContinuous() && b.isContinuous());
         Eigen::Map<Eigen::Matrix<float, Eigen::Dynamic, Eigen::Dynamic, Eigen::RowMajor> const> des1(a.ptr<float>(), a.rows, a.cols);
         Eigen::Map<Eigen::Matrix<float, Eigen::Dynamic, Eigen::Dynamic, Eigen::RowMajor> const> des2(b.ptr<float>(), b.rows, b.cols);
-        return (des1 - des2).norm();
+        float dist = (des1 - des2).norm();
+        return dist;
     }
 
 } //namespace ORB_SLAM

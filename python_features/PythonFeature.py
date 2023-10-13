@@ -43,9 +43,9 @@ def init_lfnet(settings):
 
 
 def init_keynet(settings):
-    from feature_root_sift import RootSIFTFeature2D
-    os.chdir("./Thirdparty/pyslam/")
-    return RootSIFTFeature2D(cv2.SIFTcreate())
+    from feature_zippypoint import ZippyPointFeature2D
+    os.chdir("./Thirdparty/ZippyPoint/")
+    return ZippyPointFeature2D()
 
 
 class socket_feature:
@@ -118,6 +118,7 @@ if __name__ == '__main__':
     # customizze settings
     settings = read_parameters(settings_file)
     sys.path.append("./Thirdparty/pyslam/")
+    sys.path.append("./Thirdparty/ZippyPoint/")
     feature = None
     if settings["Extractor.Python.type"].upper() == "SUPERPOINT":
         feature = inti_superpoint(settings)

@@ -51,14 +51,14 @@ Viewer.ViewpointF: 500.0
 #  - HFNetRT: the HF-Net optimized by TensorRT
 #  - HFNetVINO: the HF-Net optimized by OpenVINO (Disabled because of the bad performance)
 Extractor.type: "PYTHON" # [HFNetTF HFNetRT HFNetVINO]
-Extractor.Python.type: "R2D2"
+Extractor.Python.type: "KEYNET"
 Extractor.KAZE.threshold: 0.0006
 
 Extractor.nFeatures: 2000 # Maximum numbers of features
 
 Extractor.needRGB: 1 # convert images to Grayscale or provides RGB
 
-Extractor.Pyrimid: 1 # construct pyrimid layer/ allow extraction method to construct scale pyrimids
+Extractor.Pyrimid: 0 # construct pyrimid layer/ allow extraction method to construct scale pyrimids
 
 # Extractor: Scale factor between levels in the scale pyramid 	
 Extractor.scaleFactor: 1.2
@@ -69,8 +69,8 @@ Extractor.nLevels: 4
 #--------------------------------------------------------------------------------------------
 # Matcher Parameters
 #--------------------------------------------------------------------------------------------
-Matcher.TH_HIGH: 3.0
-Matcher.TH_LOW: 2.8
+Matcher.TH_HIGH: 10.0
+Matcher.TH_LOW: 8.5
 
 
 

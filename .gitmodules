@@ -1,3 +1,6 @@
 [submodule "Thirdparty/pyslam"]
 	path = Thirdparty/pyslam
 	url = https://github.com/luigifreda/pyslam.git
+[submodule "Thirdparty/ZippyPoint"]
+	path = Thirdparty/ZippyPoint
+	url = https://github.com/menelaoskanakis/ZippyPoint.git

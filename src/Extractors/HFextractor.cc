@@ -313,6 +313,7 @@ int HFextractor::ExtractMultiLayers(const cv::Mat &image, std::vector<cv::KeyPoi
     }
     vKeyPoints.clear();
     vKeyPoints.reserve(nKeypoints);
+    int levels_erased = 0;
     for (int level = 0; level < nlevels; ++level)
     {
         for (auto keypoint : allKeypoints[level])
@@ -321,6 +322,11 @@ int HFextractor::ExtractMultiLayers(const cv::Mat &image, std::vector<cv::KeyPoi
             keypoint.pt *= mvScaleFactor[level];
             vKeyPoints.emplace_back(keypoint);
         }
+        
+        if(allDescriptors[level].rows == 0){
+	    allDescriptors.erase(allDescriptors.begin() + (level - levels_erased));
+	    levels_erased++;
+	}
     }
     cv::vconcat(allDescriptors.data(), allDescriptors.size(), localDescriptors);
 
