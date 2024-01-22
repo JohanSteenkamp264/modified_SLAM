@@ -35,6 +35,7 @@ Stereo.b: 0.07732
 # Depth map values factor
 RGBD.DepthMapFactor: 5000.0 # 1.0 for ROS_bag
 
+
 #--------------------------------------------------------------------------------------------
 # Viewer Parameters
 #--------------------------------------------------------------------------------------------
@@ -46,7 +47,7 @@ Viewer.CameraSize: 0.08
 Viewer.CameraLineWidth: 3.0
 Viewer.ViewpointX: 0.0
 Viewer.ViewpointY: -0.7
-Viewer.ViewpointZ: -1.8
+Viewer.ViewpointZ: -3.5
 Viewer.ViewpointF: 500.0
 
 #--------------------------------------------------------------------------------------------
@@ -59,18 +60,17 @@ Viewer.ViewpointF: 500.0
 #  - HFNetVINO: the HF-Net optimized by OpenVINO (Disabled because of the bad performance)
 Extractor.type: "SURF" # [HFNetTF HFNetRT HFNetVINO]
 
-# HFNET Extractor
-Extractor.modelPath: ""
+Extractor.nFeatures: 1500 # Maximum numbers of features
+
+Extractor.needRGB: 0 # convert images to Grayscale or provides RGB
+
+Extractor.Pyrimid: 0 # construct pyrimid layer/ allow extraction method to construct scale pyrimids
 
 # Extractor: Scale factor between levels in the scale pyramid 	
-Extractor.scaleFactor: 1.5
+Extractor.scaleFactor: 1.2
 
 # Extractor: Number of levels in the scale pyramid	
 Extractor.nLevels: 4
-
-# Extractor: Number of features per image
-Extractor.nFeatures: 1500
-Extractor.threshold: 0.1
 
 #--------------------------------------------------------------------------------------------
 # Matcher Parameters
@@ -78,4 +78,7 @@ Extractor.threshold: 0.1
 Matcher.type: "NORM_L2"
 Matcher.TH_HIGH: 0.45
 Matcher.TH_LOW: 0.36
+
+
+
 

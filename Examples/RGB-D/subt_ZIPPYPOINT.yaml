@@ -28,6 +28,14 @@ Camera.RGB: 1
 Camera.width: 640
 Camera.height: 480
 
+# Close/Far threshold. Baseline times.
+Stereo.ThDepth: 40.0
+Stereo.b: 0.07732
+
+# Depth map values factor
+RGBD.DepthMapFactor: 5000.0 # 1.0 for ROS_bag
+
+
 #--------------------------------------------------------------------------------------------
 # Viewer Parameters
 #--------------------------------------------------------------------------------------------
@@ -52,9 +60,8 @@ Viewer.ViewpointF: 500.0
 #  - HFNetVINO: the HF-Net optimized by OpenVINO (Disabled because of the bad performance)
 Extractor.type: "PYTHON" # [HFNetTF HFNetRT HFNetVINO]
 Extractor.Python.type: "ZIPPYPOINT"
-Extractor.KAZE.threshold: 0.0006
 
-Extractor.nFeatures: 2000 # Maximum numbers of features
+Extractor.nFeatures: 1500 # Maximum numbers of features
 
 Extractor.needRGB: 1 # convert images to Grayscale or provides RGB
 
@@ -69,8 +76,9 @@ Extractor.nLevels: 4
 #--------------------------------------------------------------------------------------------
 # Matcher Parameters
 #--------------------------------------------------------------------------------------------
-Matcher.TH_HIGH: 10.0
-Matcher.TH_LOW: 8.5
+Matcher.type: "NORM_L2"
+Matcher.TH_HIGH: 8.5
+Matcher.TH_LOW: 7.0
 
 
 

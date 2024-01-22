@@ -52,18 +52,17 @@ Viewer.ViewpointF: 500.0
 #  - HFNetVINO: the HF-Net optimized by OpenVINO (Disabled because of the bad performance)
 Extractor.type: "SIFT" # [HFNetTF HFNetRT HFNetVINO]
 
-# HFNET Extractor
-Extractor.modelPath: ""
+Extractor.nFeatures: 1500 # Maximum numbers of features
+
+Extractor.needRGB: 0 # convert images to Grayscale or provides RGB
+
+Extractor.Pyrimid: 0 # construct pyrimid layer/ allow extraction method to construct scale pyrimids
 
 # Extractor: Scale factor between levels in the scale pyramid 	
-Extractor.scaleFactor: 1.26
+Extractor.scaleFactor: 1.2
 
 # Extractor: Number of levels in the scale pyramid	
 Extractor.nLevels: 4
-
-# Extractor: Number of features per image
-Extractor.nFeatures: 500
-Extractor.threshold: 0.1
 
 #--------------------------------------------------------------------------------------------
 # Matcher Parameters

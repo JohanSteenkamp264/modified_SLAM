@@ -21,8 +21,8 @@ bool SURFModel::Detect(const cv::Mat &image, std::vector<cv::KeyPoint> &vKeyPoin
     if(vKeyPoints.size() > nKeypointsNum)
     {
         tDescriptors = tDescriptors.rowRange(0,nKeypointsNum);
-	    vKeyPoints.resize(nKeypointsNum);
-    }
+	vKeyPoints.resize(nKeypointsNum);
+    };
 
     tDescriptors.copyTo(localDescriptors);
 

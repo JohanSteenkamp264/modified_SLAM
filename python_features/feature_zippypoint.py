@@ -73,7 +73,6 @@ class ZippyPointFeature2D:
             w_new, h_new = self.process_resize(w, h, self.resize)
             frame = cv2.resize(frame, (w_new, h_new), interpolation=cv2.INTER_AREA)
 
-            print(frame.shape)
 
             frame_tensor, img_pad = pre_process(frame)
             scores, keypoints, descriptors = self.ZippyPoint(frame_tensor, False)

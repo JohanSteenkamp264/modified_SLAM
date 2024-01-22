@@ -141,17 +141,10 @@ int main(int argc, char **argv)
     // Stop all threads
     SLAM.Shutdown();
 
-    // Save camera trajectory
-    system(("mkdir -p \"" + strPathSaving + "\"").c_str());
-    const string kf_file =  strPathSaving + "/trajectory_keyframe.txt";
-    const string f_file =  strPathSaving + "/trajectory.txt";
-    SLAM.PrintTimeStats(strPathSaving);
-    SLAM.SaveTrajectoryTUM(f_file);
-    SLAM.SaveKeyFrameTrajectoryTUM(kf_file);
-
     // Tracking time statistics
     float totaltime = 0;
-    fstream timing_file;
+    system(("mkdir -p \"" + strPathSaving + "\"").c_str());
+    ofstream timing_file;
     timing_file.open (strPathSaving + "/processing_time.txt");
     for(int ni=0; ni<vTimesTrack.size(); ni++)
     {
@@ -164,6 +157,12 @@ int main(int argc, char **argv)
     cout << "median tracking time: " << vTimesTrack[vTimesTrack.size()/2] << endl;
     cout << "mean tracking time: " << totaltime/vTimesTrack.size() << endl;
 
+    // Save camera trajectory
+    const string kf_file =  strPathSaving + "/trajectory_keyframe.txt";
+    const string f_file =  strPathSaving + "/trajectory.txt";
+    SLAM.PrintTimeStats(strPathSaving);
+    SLAM.SaveTrajectoryEuRoC(f_file);
+    SLAM.SaveKeyFrameTrajectoryEuRoC(kf_file);
     return 0;
 }
 

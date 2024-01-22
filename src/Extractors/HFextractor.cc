@@ -52,7 +52,7 @@ HFextractor::HFextractor(int _nfeatures, Settings* settings, const std::vector<B
         }
 
         
-        determineLayers_wo_pyrimid(_noctaves, nOctaveLayers, pow(2.0,1.0/(nOctaveLayers)), sigma);
+        determineLayers_wo_pyrimid(_noctaves, 1, 2.0, sigma);
     }
     else if (mvpModels[0]->Type() == oCVSURFModel)
     {
@@ -78,7 +78,7 @@ HFextractor::HFextractor(int _nfeatures, Settings* settings, const std::vector<B
             cout << "Did not find Extractor.SURF.nOctaveLayers in settings, using default :" << nOctaveLayers << endl;
         }
 
-        determineLayers_wo_pyrimid(nOctaves, 1, 2.0, 2.5);
+        determineLayers_wo_pyrimid(nOctaves + 1, 1, 2.0, 1.2);
     }
     else if (mvpModels[0]->Type() == oCVKAZEModel)
     {

@@ -32,8 +32,8 @@ bool SIFTModel::Detect(const cv::Mat &image, std::vector<cv::KeyPoint> &vKeyPoin
 
         octave = octave < 128 ? octave : (-128 | octave);  
 
-        vKeyPoints[id_kp].octave = (octave*3) + layer - 1;
-        vKeyPoints[id_kp].size = 16.0*octave;
+        vKeyPoints[id_kp].octave = octave;
+        //vKeyPoints[id_kp].size = 16.0*octave;
         //cout << vKeyPoints[id_kp].octave << " " << octave << " " << layer << endl;
     }
     tDescriptors.copyTo(localDescriptors);

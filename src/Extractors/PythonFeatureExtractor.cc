@@ -31,15 +31,11 @@ namespace ORB_SLAM3
         link->recieve_features(vKeyPoints, tDescriptors);
         mMutexLink.unlock();        
 
-        /*if(vKeyPoints.size() > nKeypointsNum)
+        if(vKeyPoints.size() > nKeypointsNum)
         {
             tDescriptors = tDescriptors.rowRange(0,nKeypointsNum);
             vKeyPoints.resize(nKeypointsNum);
         }
-
-        for(size_t i = 0; i < vKeyPoints.size(); i++){
-            cout << vKeyPoints[i].octave << endl;
-        }*/
 
         tDescriptors.copyTo(localDescriptors);
 

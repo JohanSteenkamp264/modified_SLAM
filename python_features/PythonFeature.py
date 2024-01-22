@@ -42,7 +42,7 @@ def init_lfnet(settings):
     return LfNetFeature2D()
 
 
-def init_keynet(settings):
+def init_zippypoint(settings):
     from feature_zippypoint import ZippyPointFeature2D
     os.chdir("./Thirdparty/ZippyPoint/")
     return ZippyPointFeature2D()
@@ -130,8 +130,8 @@ if __name__ == '__main__':
         feature = init_d2net(settings)
     elif settings["Extractor.Python.type"].upper() == "LFNET":
         feature = init_lfnet(settings)
-    elif settings["Extractor.Python.type"].upper() == "KEYNET":
-        feature = init_keynet(settings)
+    elif settings["Extractor.Python.type"].upper() == "ZIPPYPOINT":
+        feature = init_zippypoint(settings)
     else:
         print(f"Invalid Extractor.Python.type {settings['Extractor.Python.type']}")
         exit()
