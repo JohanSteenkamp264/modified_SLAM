@@ -3,6 +3,15 @@ This is a modified version of [HFNet-SLAM](https://github.com/LiuLimingCode/HFNe
 
 # Instalation Instructions
 
+```
+cd 'your-workspace'
+```
+
+```
+git clone --recursive https://github.com/JohanSteenkamp264/modified_SLAM.git
+```
+
+
 ## HF-Net SLAM instalation
 We use OpenCV to manipulate images and features.
 
@@ -18,6 +27,13 @@ bash build.sh
 ```
 
 ## Pyslam
+```
+cd Thirdparty
+git clone --recursive https://github.com/luigifreda/pyslam.git
+cd pyslam
+./install_all.sh
+
+```
 
 # 2. Prerequisites
 We have tested the library in **Ubuntu 18.04**, but it should be easy to compile in other platforms. 
@@ -43,7 +59,7 @@ We use modified versions of the [DBoW2](https://github.com/dorian3d/DBoW2) libra
 Required to for Python features, version used in testing is **3.6**. [Tensorflow](https://www.tensorflow.org/install) and [Pytorch](https://pytorch.org/get-started/locally/) is used in deep leanned features and descriptor implimetations, mainly from [PySLAM](https://github.com/luigifreda/pyslam), with [Zippypoint](https://github.com/menelaoskanakis/ZippyPoint) implemeted seperate. 
 
 ## [PySLAM](https://github.com/luigifreda/pyslam)
-We sue the feature extraction and descriptors of Pyslam including deep learned features such as R2D2, D2Net, Superpoint and DELF.
+We use the feature extraction and descriptors of Pyslam including deep learned features such as R2D2, D2Net, Superpoint and DELF. For all required prerequisites please follow the [PySLAM](https://github.com/luigifreda/pyslam) guides.
 
 # Adding Features
 
