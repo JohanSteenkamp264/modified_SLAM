@@ -1,3 +1,32 @@
-# modified_SLAM
-This is a modified version of HFNet-SLAM (https://github.com/LiuLimingCode/HFNet_SLAM) to use other feature methods including SIFT, SURF and KAZE. Future includes Deep Learning methods from PySLAM (https://github.com/luigifreda/pyslam) by employing a cpp_python communication.
-# Modified-SLAM
+# Modified SLAM
+This is a modified version of [HFNet-SLAM](https://github.com/LiuLimingCode/HFNet_SLAM) to use other feature methods including SIFT, SURF and KAZE. Future includes Deep Learning methods from [PySLAM](https://github.com/luigifreda/pyslam) by employing a cpp_python communication. Loop closure detection is disabled due to the testing done on simulated subteranean datasets which caused false loop closures on [ORB-SLAM3](https://github.com/UZ-SLAMLab/ORB_SLAM3). The global descriptor is replaced by the concatanation of the highest scoring detected features untuil the length of the descriptor is reached.
+
+# Instalation Instructions
+
+# 2. Prerequisites
+We have tested the library in **Ubuntu 16.04** and **18.04**, but it should be easy to compile in other platforms. A powerful computer (e.g. i7) will ensure real-time performance and provide more stable and accurate results.
+
+## C++11 or C++0x Compiler
+We use the new thread and chrono functionalities of C++11.
+
+## Pangolin
+We use [Pangolin](https://github.com/stevenlovegrove/Pangolin) for visualization and user interface. Dowload and install instructions can be found at: https://github.com/stevenlovegrove/Pangolin.
+
+## OpenCV
+We use [OpenCV](http://opencv.org) to manipulate images and features. Dowload and install instructions can be found at: http://opencv.org. **Required at leat 3.0. Tested with OpenCV 3.2.0 and 4.4.0**.
+**SURF**
+  in order to use SURF features, which is patented [OpenCV](http://opencv.org) needs to be build from source with 
+
+## Eigen3
+Required by g2o (see below). Download and install instructions can be found at: http://eigen.tuxfamily.org. **Required at least 3.1.0**.
+
+## DBoW2 and g2o (Included in Thirdparty folder)
+We use modified versions of the [DBoW2](https://github.com/dorian3d/DBoW2) library to perform place recognition and [g2o](https://github.com/RainerKuemmerle/g2o) library to perform non-linear optimizations. Both modified libraries (which are BSD) are included in the *Thirdparty* folder.
+
+## Python
+Required to calculate the alignment of the trajectory with the ground truth. **Required Numpy module**.
+
+# Adding Features
+
+
+
