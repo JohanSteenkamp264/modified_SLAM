@@ -108,7 +108,7 @@ def init_myfeature(settings):
 ```
 Here **MyFeature2D** acts similat to the OpenCV's Feature2D with the ***detectandcompute*** function returning a list of OpenCV keypoints, and a 2D aray of descriptors, as the following exaple of using OpenCV's ORB as feature.
 ```Python
-class MyFeature2D
+class MyFeature2D:
   def __init__(self):
     self.orb = cv.ORB_create()
 
