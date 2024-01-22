@@ -114,7 +114,12 @@ class MyFeature2D:
 
   def detectandcompute(self,frame,mask=None):
     kps,des = self.orb.detectandcompute(frame)
-  return kps, des
+    return kps, des
  
+```
+To use the new feature, the calibration ***.yaml*** should be modified as follows.
+```YAML
+Extractor.type: "PYTHON" # [HFNetTF HFNetRT HFNetVINO]
+Extractor.Python.type: "MYFEATURE"
 ```
 
