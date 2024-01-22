@@ -106,7 +106,7 @@ def init_myfeature(settings):
     from feature_myfeature import MyFeature2D
     return MyFeature2D()
 ```
-Here **MyFeature2D** acts similat to the OpenCV's Feature2D with the ***detectandcompute*** function returning a list of OpenCV keypoints, and a 2D aray of descriptors, as the following exaple of using OpenCV's ORB as feature.
+Here **MyFeature2D** acts simmilar to the OpenCV's Feature2D with the ***detectandcompute*** function returning a list of OpenCV keypoints, and a 2D aray of descriptors, as the following exaple of using OpenCV's ORB as feature.
 ```Python
 class MyFeature2D:
   def __init__(self):
@@ -121,5 +121,10 @@ To use the new feature, the calibration ***.yaml*** should be modified as follow
 ```YAML
 Extractor.type: "PYTHON" 
 Extractor.Python.type: "MYFEATURE"
+```
+Also remember to change the thresholds in descriptor distances for accurate matching, in accordance to the added feature.
+```YAML
+Matcher.TH_HIGH: 1.3
+Matcher.TH_LOW: 1.0
 ```
 
