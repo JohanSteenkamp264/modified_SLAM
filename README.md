@@ -62,6 +62,59 @@ Required to for Python features, version used in testing is **3.6**. [Tensorflow
 We use the feature extraction and descriptors of Pyslam including deep learned features such as R2D2, D2Net, Superpoint and DELF. For all required prerequisites please follow the [PySLAM](https://github.com/luigifreda/pyslam) guides.
 
 # Adding Features
+In the ***PythoonFeature.py*** file
+```Python
+    if settings["Extractor.Python.type"].upper() == "SUPERPOINT":
+        feature = inti_superpoint(settings)
+    elif settings["Extractor.Python.type"].upper() == "DELF":
+        feature = inti_delf(settings)
+    elif settings["Extractor.Python.type"].upper() == "R2D2":
+        feature = init_r2d2(settings)
+    elif settings["Extractor.Python.type"].upper() == "D2NET":
+        feature = init_d2net(settings)
+    elif settings["Extractor.Python.type"].upper() == "LFNET":
+        feature = init_lfnet(settings)
+    elif settings["Extractor.Python.type"].upper() == "ZIPPYPOINT":
+        feature = init_zippypoint(settings)
+    else:
+        print(f"Invalid Extractor.Python.type {settings['Extractor.Python.type']}")
+        exit()
+```
+add an additional elif statement with yout feature name
+```Python
+    if settings["Extractor.Python.type"].upper() == "SUPERPOINT":
+        feature = inti_superpoint(settings)
+    elif settings["Extractor.Python.type"].upper() == "DELF":
+        feature = inti_delf(settings)
+    elif settings["Extractor.Python.type"].upper() == "R2D2":
+        feature = init_r2d2(settings)
+    elif settings["Extractor.Python.type"].upper() == "D2NET":
+        feature = init_d2net(settings)
+    elif settings["Extractor.Python.type"].upper() == "LFNET":
+        feature = init_lfnet(settings)
+    elif settings["Extractor.Python.type"].upper() == "ZIPPYPOINT":
+        feature = init_zippypoint(settings)
+    elif settings["Extractor.Python.type"].upper() == "MYFEATURE":
+        feature = init_myfeature(settings)
+    else:
+        print(f"Invalid Extractor.Python.type {settings['Extractor.Python.type']}")
+        exit()
+```
+note this also requires a ***init_myfeature*** fucntion
+```Python
+def init_myfeature(settings):
+    from feature_myfeature import MyFeature2D
+    return MyFeature2D()
+```
+Here **MyFeature2D** acts similat to the OpenCV's Feature2D with the ***detectandcompute*** function returning a list of OpenCV keypoints, and a 2D aray of descriptors, as the following exaple of using OpenCV's ORB as feature.
+```Python
+class MyFeature2D
+  def __init__(self):
+    self.orb = cv.ORB_create()
 
-
+  def detectandcompute(self,frame,mask=None):
+    kps,des = self.orb.detectandcompute(frame)
+  return kps, des
+ 
+```
 
