@@ -119,7 +119,7 @@ class MyFeature2D:
 ```
 To use the new feature, the calibration ***.yaml*** should be modified as follows.
 ```YAML
-Extractor.type: "PYTHON" # [HFNetTF HFNetRT HFNetVINO]
+Extractor.type: "PYTHON" 
 Extractor.Python.type: "MYFEATURE"
 ```
 
