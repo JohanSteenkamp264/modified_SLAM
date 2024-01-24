@@ -1,5 +1,5 @@
 # Modified SLAM
-This is a modified version of [HFNet-SLAM](https://github.com/LiuLimingCode/HFNet_SLAM) to use other feature methods including SIFT, SURF and KAZE. Future includes Deep Learning methods from [PySLAM](https://github.com/luigifreda/pyslam) by employing a cpp_python communication. Loop closure detection is disabled due to the testing done on simulated subteranean datasets which caused false loop closures on [ORB-SLAM3](https://github.com/UZ-SLAMLab/ORB_SLAM3). The global descriptor is replaced by the concatanation of the highest scoring detected features untuil the length of the descriptor is reached.
+This repository presents a modified version of [HFNet-SLAM](https://github.com/LiuLimingCode/HFNet_SLAM), adapted to incorporate alternative feature detection methods such as SIFT, SURF, and KAZE. Future updates will include Deep Learning techniques from [PySLAM](https://github.com/luigifreda/pyslam) through cpp_python communication integration. Loop closure detection has been disabled due to tests conducted on simulated subterranean datasets, where it caused false loop closures in ORB- [ORB-SLAM3](https://github.com/UZ-SLAMLab/ORB_SLAM3). Instead of using a global descriptor, this version concatenates the highest scoring detected features until the desired length of the descriptor is achieved.
 
 # Instalation Instructions
 
@@ -45,9 +45,12 @@ We use the new thread and chrono functionalities of C++11.
 We use [Pangolin](https://github.com/stevenlovegrove/Pangolin) for visualization and user interface. Dowload and install instructions can be found at: https://github.com/stevenlovegrove/Pangolin.
 
 ## OpenCV
-We use [OpenCV](http://opencv.org) to manipulate images and features. Dowload and install instructions can be found at: http://opencv.org. **Required at leat 3.0. Tested with OpenCV 3.2.0 and 4.4.0**.
+We use [OpenCV](http://opencv.org) to manipulate images and features. Dowload and install instructions can be found at: http://opencv.org. **Tested with OpenCV 4.8.0**.
 **SURF**
-  in order to use SURF features, which is patented [OpenCV](http://opencv.org) needs to be build from source with non-free modules enabled, see the following [guide](https://drthitirat.wordpress.com/2019/01/20/opencv-python-build-opencv-4-0-1-dev-contrib-non-free-siftsurf-from-sources-on-windows-10-64-bit-os/).
+  To utilize SURF features, which are patented, you must build [OpenCV](http://opencv.org) from source with the non-free modules enabled. Detailed instructions for this process can be found in the following  [guide](https://developer.ridgerun.com/wiki/index.php/Compiling_OpenCV_from_Source). When using the cmake command during this process, be sure to include the following line to enable the non-free modules
+  ```bash
+  -D OPENCV_ENABLE_NONFREE:BOOL=ON
+  ```
 
 ## Eigen3
 Required by g2o (see below). Download and install instructions can be found at: http://eigen.tuxfamily.org. **Required at least 3.1.0**.
@@ -56,10 +59,10 @@ Required by g2o (see below). Download and install instructions can be found at: 
 We use modified versions of the [DBoW2](https://github.com/dorian3d/DBoW2) library to perform place recognition and [g2o](https://github.com/RainerKuemmerle/g2o) library to perform non-linear optimizations. Both modified libraries (which are BSD) are included in the *Thirdparty* folder.
 
 ## Python
-Required to for Python features, version used in testing is **3.6**. [Tensorflow](https://www.tensorflow.org/install) and [Pytorch](https://pytorch.org/get-started/locally/) is used in deep leanned features and descriptor implimetations, mainly from [PySLAM](https://github.com/luigifreda/pyslam), with [Zippypoint](https://github.com/menelaoskanakis/ZippyPoint) implemeted seperate. 
+For Python functionality, the version used in testing is **3.6**. We employ  [Tensorflow](https://www.tensorflow.org/install) and [Pytorch](https://pytorch.org/get-started/locally/) for deep learning features and descriptor implementations, primarily sourced from [PySLAM](https://github.com/luigifreda/pyslam). Additionally, [Zippypoint](https://github.com/menelaoskanakis/ZippyPoint) is implemented separately to complement these frameworks.
 
 ## [PySLAM](https://github.com/luigifreda/pyslam)
-We use the feature extraction and descriptors of Pyslam including deep learned features such as R2D2, D2Net, Superpoint and DELF. For all required prerequisites please follow the [PySLAM](https://github.com/luigifreda/pyslam) guides.
+We utilize the feature extraction and descriptor capabilities of [PySLAM](https://github.com/luigifreda/pyslam), including deep learning-based features like R2D2, D2Net, Superpoint, and DELF. To ensure all required prerequisites are met, please follow the guidelines and installation instructions provided in the PySLAM repository.
 
 # Adding Features
 In the ***PythoonFeature.py*** file
